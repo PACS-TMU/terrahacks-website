@@ -17,7 +17,7 @@ export default function Hero() {
             <div className='flex flex-col gap-1 lg:gap-4 items-center justify-center text-center text-xs md:text-lg lg:text-2xl xl:text-4xl text-[#1E1E1E] absolute w-full mx-auto px-6 md:px-10 lg:px-36 xl:px-48 3xl:px-56 top-[8.5%] md:top-[8.5%] lg:top-[7.5%] xl:top-[6.5%] z-20 float-in'>
                 <p className=''>
                     {/*Applications now <span className="font-bold text-red-600">EXTENDED</span> until July 26th, 11:59 PM!*/}
-                    TerraHacks applications are now <span className="font-bold text-red-600">CLOSED</span>! Stay tuned for results.
+                    TerraHacks 2024 has concluded. Join us again next year!
                 </p>
                 {/*<a*/}
                 {/*    aria-label='Apply to TerraHacks 2024'*/}
