@@ -132,3 +132,50 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
+
+export const subscribeToNewsletterAction = async (formData: FormData) => {
+  "use server";
+  
+  const email = formData.get("email")?.toString();
+  const name = formData.get("name")?.toString() || "";
+  const supabase = await createClient();
+  
+  if (!email) {
+    return encodedRedirect(
+      "error",
+      "/newsletter",
+      "Email is required"
+    );
+  }
+  
+  try {
+    // Insert the subscription into Supabase
+    const { error } = await supabase
+      .from("newsletter")
+      .insert([{ email, name }]);
+      
+    if (error) {
+      if (error.code === "23505") { // Unique violation error code
+        return encodedRedirect(
+          "error", 
+          "/newsletter", 
+          "You're already subscribed!"
+        );
+      }
+      throw error;
+    }
+    
+    return encodedRedirect(
+      "success",
+      "/newsletter",
+      "Thanks for subscribing to our newsletter!"
+    );
+  } catch (error) {
+    console.error("Newsletter subscription error:", error);
+    return encodedRedirect(
+      "error",
+      "/newsletter",
+      "Failed to subscribe. Please try again."
+    );
+  }
+};
