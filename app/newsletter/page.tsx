@@ -18,23 +18,35 @@ export default async function NewsletterPage({
         
         <form className="flex flex-col gap-4 max-w-md">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email_address">Email Address</Label>
             <Input
               type="email"
-              id="email"
-              name="email"
+              id="email_address"
+              name="email_address"
               placeholder="you@example.com"
               required
             />
           </div>
           
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Name (Optional)</Label>
+            <Label htmlFor="first_name">First Name</Label>
             <Input
               type="text"
-              id="name"
-              name="name"
-              placeholder="Your name"
+              id="first_name"
+              name="first_name"
+              placeholder="Your first name"
+              required
+            />
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="last_name">Last Name</Label>
+            <Input
+              type="text"
+              id="last_name"
+              name="last_name"
+              placeholder="Your last name"
+              required
             />
           </div>
           
