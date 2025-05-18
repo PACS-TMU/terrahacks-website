@@ -145,7 +145,7 @@ export const subscribeToNewsletterAction = async (formData: FormData) => {
     return encodedRedirect(
       "error",
       "/newsletter",
-      "All fields are required"
+      "All fields are required."
     );
   }
   
@@ -164,7 +164,7 @@ export const subscribeToNewsletterAction = async (formData: FormData) => {
         return encodedRedirect(
           "error", 
           "/newsletter", 
-          "You're already subscribed!"
+          "You've already subscribed!"
         );
       }
       console.error("Supabase error:", error);
