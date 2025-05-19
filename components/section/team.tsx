@@ -1,4 +1,4 @@
-export default function Team(){
+export default function Team() {
     return (
         <>
         </>
