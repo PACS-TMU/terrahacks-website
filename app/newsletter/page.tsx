@@ -1,4 +1,4 @@
-import { subscribeToNewsletterAction } from "@/app/server/subscribeToNewsletterAction";
+import { subscribeToNewsletterAction } from "@/server/subscribeToNewsletterAction";
 import { FormMessage, Message } from "@/components/form/form-message";
 import { SubmitButton } from "@/components/form/submit-button";
 import InputField from "@/components/newsletter/input-field";
