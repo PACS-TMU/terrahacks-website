@@ -1,6 +1,6 @@
-export default function Sponsors() {
-    return (
-        <>
-        </>
-    );
-}
+    export default function Sponsors() {
+        return (
+            <>
+            </>
+        );
+    }
