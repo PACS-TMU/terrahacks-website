@@ -66,6 +66,12 @@ export default async function TeamPage() {
   
   // Function to get public URL for team member image
   const getImageUrl = (imagePath: string) => {
+    // If the imagePath already contains the full URL, extract just the filename
+    if (imagePath.includes('supabase.co')) {
+      const parts = imagePath.split('/');
+      imagePath = parts[parts.length - 1];
+    }
+    
     const { data } = supabase.storage
       .from("team")
       .getPublicUrl(imagePath);
