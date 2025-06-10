@@ -57,21 +57,30 @@ export default function Sponsors() {
   }, []);
 
   return (
-    <section className="main py-16 md:py-24">
-      {/* Header */}
-      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
-        OUR SPONSORS
-      </h2>
-      
-      {/* Content */}
-      <div className="max-w-4xl mb-12">
-        <p className="text-base md:text-lg leading-relaxed text-gray-700">
-          We are grateful to our sponsors for their support; this event would not be possible without them! These contributions will help shape an unforgettable experience for all our attendees.
-        </p>
+    <section className="main">
+      {/* Header and Content - aligned to the right */}
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        {/* Empty left column on desktop */}
+        <div className="hidden md:block"></div>
+        
+        {/* Right column - Title and Content */}
+        <div className="px-4 md:px-8 lg:px-12 pt-0 pb-8">
+          {/* Header */}
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
+            OUR SPONSORS
+          </h2>
+          
+          {/* Content */}
+          <div className="max-w-2xl">
+            <p className="text-base md:text-lg leading-relaxed text-gray-700">
+              We are grateful to our sponsors for their support; this event would not be possible without them! These contributions will help shape an unforgettable experience for all our attendees.
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Images section - 50/50 split */}
-      <div ref={imagesRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+      {/* Images section - 50/50 split below content */}
+      <div ref={imagesRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 px-4 md:px-0">
         {/* First image - Sponsors_Terrain.png */}
         <div 
           className={`relative h-[300px] md:h-[400px] lg:h-[500px] transition-all duration-1000 ease-out ${

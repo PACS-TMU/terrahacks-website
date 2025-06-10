@@ -18,7 +18,7 @@ export default function About() {
     
     const stoneUrl = supabase.storage
       .from("main")
-      .getPublicUrl("About_Stone.png");
+      .getPublicUrl("About_Stone.svg");
     
     const terrainUrl = supabase.storage
       .from("main")
@@ -72,11 +72,11 @@ export default function About() {
         </p>
       </div>
 
-      {/* Images section - 50/50 split */}
-      <div ref={imagesRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
-        {/* First image - About_Stone.png */}
+      {/* Images section - reduced gap for closer positioning */}
+      <div ref={imagesRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-0 lg:gap-2">
+        {/* First image - About_Stone.svg */}
         <div 
-          className={`relative h-[300px] md:h-[400px] lg:h-[500px] transition-all duration-1000 ease-out ${
+          className={`relative h-[400px] md:h-[500px] lg:h-[800px] transition-all duration-1000 ease-out ${
             isVisible 
               ? 'translate-y-0 opacity-100' 
               : 'translate-y-full opacity-0'
@@ -88,7 +88,7 @@ export default function About() {
               src={imageUrls.stone}
               alt="About Stone"
               fill
-              className="object-contain"
+              className="object-contain md:object-right"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           )}
@@ -108,7 +108,7 @@ export default function About() {
               src={imageUrls.terrain}
               alt="About Terrain"
               fill
-              className="object-contain"
+              className="object-contain md:object-left"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           )}
