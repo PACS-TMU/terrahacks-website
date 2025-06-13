@@ -46,26 +46,19 @@ export default function Homepage() {
 
   return (
     <div className="relative">
-      {/* Background container with minimum height to show full image */}
-      <div 
-        className="absolute inset-0 w-full"
-        style={{ 
-          minHeight: `${calculateMinHeight()}px`,
-          height: '100vh'
-        }}
-      >
+      {/* Background container - fixed positioning to prevent layout shifts */}
+      <div className="fixed inset-0 w-full h-full">
         {backgroundUrl && (
-          <div className="absolute inset-0 w-full h-full">
-            <Image
-              src={backgroundUrl}
-              alt="TerraHacks background"
-              fill
-              className="object-cover object-center"
-              sizes="100vw"
-              priority
-              quality={90}
-            />
-          </div>
+          <Image
+            src={backgroundUrl}
+            alt="TerraHacks background"
+            fill
+            className="object-cover object-top"
+            sizes="100vw"
+            priority
+            quality={90}
+            placeholder="empty"
+          />
         )}
       </div>
       
