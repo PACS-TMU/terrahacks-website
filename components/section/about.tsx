@@ -7,7 +7,6 @@ export default function About() {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [showAfterImage, setShowAfterImage] = useState(false);
-  const [observerReady, setObserverReady] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const hasTriggeredRef = useRef(false);
 
@@ -21,40 +20,26 @@ export default function About() {
     
     setBeforeImageUrl(beforeData.data.publicUrl);
 
-    // Progressive delay: 1000ms for About section
-    const readyTimeout = setTimeout(() => {
-      setObserverReady(true);
-    }, 1000);
-
-    return () => clearTimeout(readyTimeout);
+    // Preload the after image
+    const afterData = supabase.storage
+      .from("main")
+      .getPublicUrl("about_after.png");
+    setAfterImageUrl(afterData.data.publicUrl);
   }, []);
 
   useEffect(() => {
-    if (!observerReady) return;
-
-    let timeoutId: NodeJS.Timeout;
-    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !showAfterImage && !hasTriggeredRef.current) {
+          if (entry.isIntersecting && !hasTriggeredRef.current) {
             hasTriggeredRef.current = true;
-            
-            timeoutId = setTimeout(() => {
-              const supabase = createClient();
-              const afterData = supabase.storage
-                .from("main")
-                .getPublicUrl("about_after.png");
-              
-              setAfterImageUrl(afterData.data.publicUrl);
-              setShowAfterImage(true);
-            }, 3000);
+            setShowAfterImage(true);
           }
         });
       },
       {
-        threshold: 0.5,
-        rootMargin: "-100px 0px"
+        threshold: 0.4,
+        rootMargin: "0px"
       }
     );
 
@@ -66,11 +51,8 @@ export default function About() {
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
       }
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
     };
-  }, [showAfterImage, observerReady]);
+  }, []);
 
   return (
     <section ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24">
@@ -101,12 +83,14 @@ export default function About() {
           />
         )}
         
-        {/* After image - loaded and shown when scrolled into view */}
-        {afterImageUrl && showAfterImage && (
+        {/* After image - shown immediately when scrolled into view */}
+        {afterImageUrl && (
           <img
             src={afterImageUrl}
             alt="About TerraHacks - After"
-            className="absolute top-0 left-0 w-full h-auto opacity-100"
+            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
+              showAfterImage ? 'opacity-100' : 'opacity-0'
+            }`}
           />
         )}
       </div>

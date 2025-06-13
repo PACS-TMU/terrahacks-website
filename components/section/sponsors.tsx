@@ -59,10 +59,10 @@ export default function Sponsors() {
       .getPublicUrl("sponsors_before.png");
     setBeforeImageUrl(beforeData.data.publicUrl);
 
-    // Progressive delay: 1200ms for Sponsors section
+    // Set observer ready after 1000ms
     const readyTimeout = setTimeout(() => {
       setObserverReady(true);
-    }, 1200);
+    }, 1000);
 
     return () => clearTimeout(readyTimeout);
   }, []);
@@ -70,28 +70,24 @@ export default function Sponsors() {
   useEffect(() => {
     if (!observerReady) return;
 
-    let timeoutId: NodeJS.Timeout;
-    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !showAfterImage && !hasTriggeredRef.current) {
+          if (entry.isIntersecting && !hasTriggeredRef.current) {
             hasTriggeredRef.current = true;
-            
-            timeoutId = setTimeout(() => {
-              const supabase = createClient();
-              const afterData = supabase.storage
-                .from("main")
-                .getPublicUrl("sponsors_after.png");
-              setAfterImageUrl(afterData.data.publicUrl);
-              setShowAfterImage(true);
-            }, 3000);
+            // Load after image and show it immediately
+            const supabase = createClient();
+            const afterData = supabase.storage
+              .from("main")
+              .getPublicUrl("sponsors_after.png");
+            setAfterImageUrl(afterData.data.publicUrl);
+            setShowAfterImage(true);
           }
         });
       },
       {
-        threshold: 0.5,
-        rootMargin: "-100px 0px"
+        threshold: 0.4,
+        rootMargin: "0px"
       }
     );
 
@@ -103,11 +99,8 @@ export default function Sponsors() {
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
       }
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
     };
-  }, [showAfterImage, observerReady]);
+  }, [observerReady]);
 
   return (
     <section ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24 items-end">
@@ -169,7 +162,7 @@ export default function Sponsors() {
           />
         )}
 
-        {/* After image - loaded and shown when scrolled into view */}
+        {/* After image - shown immediately when scrolled into view */}
         {afterImageUrl && showAfterImage && (
           <img
             src={afterImageUrl}

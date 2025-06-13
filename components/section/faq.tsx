@@ -37,40 +37,35 @@ export default function Faq(){
             .getPublicUrl("faq_before.png");
             setBeforeImageUrl(beforeData.data.publicUrl);
 
-        // Progressive delay: 1400ms for FAQ section
+        // Set observer ready after 1000ms
         const readyTimeout = setTimeout(() => {
             setObserverReady(true);
-        }, 1400);
+        }, 1000);
 
         return () => clearTimeout(readyTimeout);
     }, []);
 
     useEffect(() => {
         if (!observerReady) return;
-    
-        let timeoutId: NodeJS.Timeout;
-        
+
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              if (entry.isIntersecting && !showAfterImage && !hasTriggeredRef.current) {
+              if (entry.isIntersecting && !hasTriggeredRef.current) {
                 hasTriggeredRef.current = true;
-                
-                timeoutId = setTimeout(() => {
-                  const supabase = createClient();
-                  const afterData = supabase.storage
-                    .from("main")
-                    .getPublicUrl("faq_after.png");
-                  
-                  setAfterImageUrl(afterData.data.publicUrl);
-                  setShowAfterImage(true);
-                }, 3000); 
+                // Load after image and show it immediately
+                const supabase = createClient();
+                const afterData = supabase.storage
+                  .from("main")
+                  .getPublicUrl("faq_after.png");
+                setAfterImageUrl(afterData.data.publicUrl);
+                setShowAfterImage(true);
               }
             });
           },
           {
-            threshold: 0.5,
-            rootMargin: "-100px 0px"
+            threshold: 0.4,
+            rootMargin: "0px"
           }
         );
 
@@ -82,11 +77,8 @@ export default function Faq(){
           if (sectionRef.current) {
             observer.unobserve(sectionRef.current);
           }
-          if (timeoutId) {
-            clearTimeout(timeoutId);
-          }
         };
-    }, [showAfterImage, observerReady]);
+    }, [observerReady]);
 
     return (
          <section ref={sectionRef} className="main min-h-screen flex flex-col py-18 md:py-24">
