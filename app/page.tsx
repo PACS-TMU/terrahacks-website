@@ -48,7 +48,7 @@ export default function Homepage() {
     <div className="relative">
       {/* Background container with minimum height to show full image */}
       <div 
-        className="fixed inset-0 w-full"
+        className="absolute inset-0 w-full"
         style={{ 
           minHeight: `${calculateMinHeight()}px`,
           height: '100vh'
@@ -60,7 +60,7 @@ export default function Homepage() {
               src={backgroundUrl}
               alt="TerraHacks background"
               fill
-              className="object-contain object-top"
+              className="object-cover object-center"
               sizes="100vw"
               priority
               quality={90}
