@@ -28,13 +28,36 @@ export default function Homepage() {
 
   return (
     <>
-      <p>Welcome to the homepage!</p>
-      <Home />
-      <About />
-      <Sponsors />
-      <Faq />
-      <Team />
-      <Contact />
+      {/* Background Image Container */}
+      <div className="fixed inset-0 z-0">
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-b from-green-50 to-blue-50 animate-pulse" />
+        )}
+        {backgroundUrl && (
+          <Image
+            src={backgroundUrl}
+            alt="TerraHacks background"
+            fill
+            className="object-cover"
+            onLoad={() => setImageLoaded(true)}
+            priority
+          />
+        )}
+        {/* Optional overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/5" />
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10">
+        <Navbar />
+        <Hero />
+        <Home />
+        <About />
+        <Sponsors />
+        <Faq />
+        <Team />
+        <Contact />
+      </div>
     </>
   );
 }
