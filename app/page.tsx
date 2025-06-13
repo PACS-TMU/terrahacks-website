@@ -12,12 +12,7 @@ import Image from "next/image";
 
 export default function Homepage() {
   const [backgroundUrl, setBackgroundUrl] = useState<string>("");
-  const [imageAspectRatio, setImageAspectRatio] = useState<number>(0);
   const [imageLoaded, setImageLoaded] = useState(false);
-
-  // Estimated aspect ratio for your background image
-  // Adjust this based on your actual image dimensions
-  const ESTIMATED_ASPECT_RATIO = 0.5625; // 16:9 aspect ratio (9/16)
 
   useEffect(() => {
     // Get the background image URL from Supabase
@@ -27,43 +22,31 @@ export default function Homepage() {
       .getPublicUrl("Background.png");
     
     setBackgroundUrl(data.publicUrl);
-
-    // Preload image to get its aspect ratio
-    if (data.publicUrl) {
-      const img = new window.Image();
-      img.onload = () => {
-        const aspectRatio = img.naturalHeight / img.naturalWidth;
-        setImageAspectRatio(aspectRatio);
-        setImageLoaded(true);
-      };
-      img.src = data.publicUrl;
-    }
   }, []);
 
   return (
     <div className="relative">
-      {/* Background container - no transition for immediate full size */}
+      {/* Background container - absolute positioning for scrolling */}
       <div 
-        className="absolute inset-x-0 top-0 w-full"
-        style={{ 
-          paddingBottom: `${(imageAspectRatio || ESTIMATED_ASPECT_RATIO) * 100}%`
+        className="absolute inset-0 w-full"
+        style={{
+          // Set a minimum height to ensure full viewport coverage
+          minHeight: '100vh',
+          // Height will be auto to accommodate the full image
+          height: 'auto'
         }}
       >
         {/* Placeholder background while image loads */}
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-b from-green-50 to-blue-50 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-b from-green-50 to-blue-50 animate-pulse min-h-screen" />
         )}
         
         {backgroundUrl && (
-          <Image
+          <img
             src={backgroundUrl}
             alt="TerraHacks background"
-            fill
-            className="object-contain object-top"
-            sizes="100vw"
-            priority
-            quality={90}
-            onLoadingComplete={() => setImageLoaded(true)}
+            className="w-full h-auto object-contain object-top"
+            onLoad={() => setImageLoaded(true)}
           />
         )}
       </div>
