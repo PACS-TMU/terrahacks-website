@@ -13,13 +13,20 @@ interface TeamMember {
   img: string;
   name: string;
   position: string;
+  committee: string;
+}
+
+interface CommitteeGroup {
+  committeeName: string;
+  members: TeamMember[];
 }
 
 export default function TeamCarousel() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [committeeGroups, setCommitteeGroups] = useState<CommitteeGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   // Preload images function
   const preloadImage = (src: string): Promise<void> => {
@@ -35,12 +42,32 @@ export default function TeamCarousel() {
   const preloadAllImages = async (members: TeamMember[]) => {
     try {
       const imagePromises = members.map(member => preloadImage(member.img));
-      await Promise.allSettled(imagePromises); // Use allSettled to handle some failed images
+      await Promise.allSettled(imagePromises);
       setImagesLoaded(true);
     } catch (error) {
       console.error('Some images failed to preload');
-      setImagesLoaded(true); // Still show the carousel even if some images fail
+      setImagesLoaded(true);
     }
+  };
+
+  // Group team members by committee
+  const groupByCommittee = (members: TeamMember[]): CommitteeGroup[] => {
+    const grouped = members.reduce((acc, member) => {
+      const committee = member.committee || 'Other';
+      if (!acc[committee]) {
+        acc[committee] = [];
+      }
+      acc[committee].push(member);
+      return acc;
+    }, {} as Record<string, TeamMember[]>);
+
+    // Convert to array and sort by committee name
+    return Object.entries(grouped)
+      .map(([committeeName, members]) => ({
+        committeeName,
+        members: members.sort((a, b) => a.name.localeCompare(b.name)) // Sort members by name within committee
+      }))
+      .sort((a, b) => a.committeeName.localeCompare(b.committeeName)); // Sort committees alphabetically
   };
 
   useEffect(() => {
@@ -50,7 +77,9 @@ export default function TeamCarousel() {
       try {
         const { data, error } = await supabase
           .from('team')
-          .select('img, name, position');
+          .select('img, name, position, committee')
+          .order('committee', { ascending: true })
+          .order('name', { ascending: true });
        
         if (error) {
           throw error;
@@ -58,22 +87,23 @@ export default function TeamCarousel() {
         
         if (data) {
           setTeamMembers(data);
-          // Preload images after setting team members
+          const grouped = groupByCommittee(data);
+          setCommitteeGroups(grouped);
           await preloadAllImages(data);
         }
       } catch (error) {
-      console.error('Error fetching team members:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+        console.error('Error fetching team members:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchTeamMembers();
-}, []);
+    fetchTeamMembers();
+  }, []);
 
-  // Track individual image loading
-  const handleImageLoad = (index: number) => {
-    setLoadedImages(prev => new Set([...Array.from(prev), index]));
+  // Track individual image loading with unique identifier
+  const handleImageLoad = (memberName: string) => {
+    setLoadedImages(prev => new Set([...Array.from(prev), memberName]));
   };
 
   if (loading || !imagesLoaded) {
@@ -101,79 +131,93 @@ export default function TeamCarousel() {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto mr-9">
-    
-      
-      <Swiper
-        slidesPerView={1}
-        spaceBetween={20}
-        breakpoints={{
-          640: {
-            slidesPerView: 2,
-            spaceBetween: 30,
-          },
-          1024: {
-            slidesPerView: 3,
-            spaceBetween: 40,
-          },
-        }}
-        // pagination={{
-        //   clickable: true,
-        //   dynamicBullets: true,
-        // }}
-        navigation={false}
-        autoplay={{
-          delay: 1500,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        loop={true}
-        centeredSlides={true}
-        grabCursor={false}
-        modules={[Pagination, Navigation, Autoplay]}
-        className="mySwiper !pb-12"
-      >
-        {teamMembers.map((member, index) => (
-          <SwiperSlide key={index}>
-            <div className="flex flex-col items-center justify-center h-full p-4 md:p-6 lg:p-8">
-              <div className="bg-white rounded-xl  p-6 w-full max-w-sm mx-auto transition-transform duration-300 hover:scale-105">
-                <div className="relative mb-6">
-                  {/* Loading placeholder */}
-                  {!loadedImages.has(index) && (
-                    <div className="w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full bg-gray-200 animate-pulse mx-auto border-4 border-white shadow-lg flex items-center justify-center">
-                      <div className="text-gray-400 text-sm">Loading...</div>
+    <div className="w-full max-w-7xl mx-auto">
+      {/* Right-aligned Carousel Container */}
+      <div className="flex justify-end">
+        <div className="w-full lg:w-2/3">
+          <Swiper
+            slidesPerView={1}
+            spaceBetween={30}
+            navigation={false}
+            autoplay={{
+              delay: 1500,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: false,
+            }}
+            loop={committeeGroups.length > 1}
+            centeredSlides={false}
+            grabCursor={false}
+            modules={[Pagination, Navigation, Autoplay]}
+            className="mySwiper !pb-12"
+          >
+            {committeeGroups.map((group, groupIndex) => (
+              <SwiperSlide key={groupIndex}>
+                <div className="p-6 flex flex-col items-center justify-center min-h-[500px]">
+                  {/* Committee Header */}
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-2">
+                      {group.committeeName}
+                    </h3>
+                  </div>
+
+                  {/* Committee Members Grid */}
+                  <div className="flex justify-center w-full">
+                    <div className={`grid gap-6 place-items-center ${
+                      group.members.length === 1 ? 'grid-cols-1' :
+                      group.members.length === 2 ? 'grid-cols-1 sm:grid-cols-2' :
+                      group.members.length === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+                      group.members.length === 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+                      group.members.length <= 6 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+                      'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                    }`}>
+                      {group.members.map((member, memberIndex) => (
+                        <div 
+                          key={`${group.committeeName}-${member.name}-${memberIndex}`}
+                          className="bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl w-full max-w-xs"
+                        >
+                          <div className="relative mb-4">
+                            {/* Loading placeholder */}
+                            {!loadedImages.has(member.name) && (
+                              <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gray-200 animate-pulse mx-auto border-4 border-white shadow-lg flex items-center justify-center">
+                                <div className="text-gray-400 text-xs">Loading...</div>
+                              </div>
+                            )}
+                            
+                            <img 
+                              src={member.img} 
+                              alt={member.name}
+                              className={`w-24 h-24 md:w-28 md:h-28 rounded-full object-cover object-center mx-auto border-4 border-white shadow-lg transition-opacity duration-300 ${
+                                loadedImages.has(member.name) ? 'opacity-100' : 'opacity-0 absolute top-0'
+                              }`}
+                              onLoad={() => handleImageLoad(member.name)}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=200&background=e5e7eb&color=374151`;
+                                handleImageLoad(member.name);
+                              }}
+                              loading="eager"
+                            />
+                          </div>
+                          
+                          <div className="text-center">
+                            <h4 className="text-lg font-bold text-gray-800 mb-1">
+                              {member.name}
+                            </h4>
+                            <p className="text-sm text-blue-600 font-medium">
+                              {member.position}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  )}
+                  </div>
                   
-                  <img 
-                    src={member.img} 
-                    alt={member.name}
-                    className={`w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 rounded-full object-cover object-center mx-auto border-4 border-white shadow-lg transition-opacity duration-300 ${
-                      loadedImages.has(index) ? 'opacity-100' : 'opacity-0 absolute top-0'
-                    }`}
-                    onLoad={() => handleImageLoad(index)}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&size=200&background=e5e7eb&color=374151`;
-                      handleImageLoad(index);
-                    }}
-                    loading="eager" // Load images immediately
-                  />
                 </div>
-                
-                <div className="text-center">
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 mb-2">
-                    {member.name}
-                  </h3>
-                  <h4 className="text-sm md:text-base lg:text-lg text-blue-600 font-medium mb-4">
-                    {member.position}
-                  </h4>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
     </div>
   );
 }
