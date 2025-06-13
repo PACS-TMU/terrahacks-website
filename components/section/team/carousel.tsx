@@ -14,6 +14,7 @@ interface TeamMember {
   name: string;
   position: string;
   committee: string;
+  priority: number;
 }
 
 interface CommitteeGroup {
@@ -21,7 +22,7 @@ interface CommitteeGroup {
   members: TeamMember[];
 }
 
-export default function TeamCarousel() {
+export default function Carousel() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [committeeGroups, setCommitteeGroups] = useState<CommitteeGroup[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,26 +66,32 @@ export default function TeamCarousel() {
     return Object.entries(grouped)
       .map(([committeeName, members]) => ({
         committeeName,
-        members: members.sort((a, b) => a.name.localeCompare(b.name)) // Sort members by name within committee
+        members: members.sort((a, b) => {
+          const priorityA = (a as any).priority ?? 999;
+          const priorityB = (b as any).priority ?? 999;
+
+          if (priorityA !== priorityB) return priorityA - priorityB;
+          return a.name.localeCompare(b.name);
+        })
       }))
       .sort((a, b) => a.committeeName.localeCompare(b.committeeName)); // Sort committees alphabetically
   };
 
   useEffect(() => {
     const supabase = createClient();
-    
+
     const fetchTeamMembers = async () => {
       try {
         const { data, error } = await supabase
           .from('team')
-          .select('img, name, position, committee')
+          .select('img, name, position, committee, priority')
           .order('committee', { ascending: true })
           .order('name', { ascending: true });
-       
+
         if (error) {
           throw error;
         }
-        
+
         if (data) {
           setTeamMembers(data);
           const grouped = groupByCommittee(data);
@@ -138,9 +145,9 @@ export default function TeamCarousel() {
           <Swiper
             slidesPerView={1}
             spaceBetween={30}
-            navigation={false}
+            navigation={true}
             autoplay={{
-              delay: 1500,
+              delay: 4000,
               disableOnInteraction: false,
               pauseOnMouseEnter: false,
             }}
@@ -162,16 +169,15 @@ export default function TeamCarousel() {
 
                   {/* Committee Members Grid */}
                   <div className="flex justify-center w-full">
-                    <div className={`grid gap-6 place-items-center ${
-                      group.members.length === 1 ? 'grid-cols-1' :
+                    <div className={`grid gap-6 place-items-center ${group.members.length === 1 ? 'grid-cols-1' :
                       group.members.length === 2 ? 'grid-cols-1 sm:grid-cols-2' :
-                      group.members.length === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
-                      group.members.length === 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
-                      group.members.length <= 6 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
-                      'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-                    }`}>
+                        group.members.length === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+                          group.members.length === 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+                            group.members.length <= 6 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' :
+                              'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                      }`}>
                       {group.members.map((member, memberIndex) => (
-                        <div 
+                        <div
                           key={`${group.committeeName}-${member.name}-${memberIndex}`}
                           className="bg-white rounded-xl shadow-lg p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl w-full max-w-xs"
                         >
@@ -182,13 +188,12 @@ export default function TeamCarousel() {
                                 <div className="text-gray-400 text-xs">Loading...</div>
                               </div>
                             )}
-                            
-                            <img 
-                              src={member.img} 
+
+                            <img
+                              src={member.img}
                               alt={member.name}
-                              className={`w-24 h-24 md:w-28 md:h-28 rounded-full object-cover object-center mx-auto border-4 border-white shadow-lg transition-opacity duration-300 ${
-                                loadedImages.has(member.name) ? 'opacity-100' : 'opacity-0 absolute top-0'
-                              }`}
+                              className={`w-24 h-24 md:w-28 md:h-28 rounded-full object-cover object-center mx-auto border-4 border-white shadow-lg transition-opacity duration-300 ${loadedImages.has(member.name) ? 'opacity-100' : 'opacity-0 absolute top-0'
+                                }`}
                               onLoad={() => handleImageLoad(member.name)}
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
@@ -198,7 +203,7 @@ export default function TeamCarousel() {
                               loading="eager"
                             />
                           </div>
-                          
+
                           <div className="text-center">
                             <h4 className="text-lg font-bold text-gray-800 mb-1">
                               {member.name}
@@ -211,7 +216,7 @@ export default function TeamCarousel() {
                       ))}
                     </div>
                   </div>
-                  
+
                 </div>
               </SwiperSlide>
             ))}

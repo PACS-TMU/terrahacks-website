@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
-import Carasoul from "@/components/section/team/carasoul";
+import Carousel from "@/components/section/team/carousel";
+import './team.css';
 
 export default function Team() {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
@@ -61,7 +62,7 @@ export default function Team() {
         MEET THE TEAM
       </h2>
       
-      <Carasoul />
+      <Carousel />
       
       {/* Image section - fills remaining space */}
       <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative">

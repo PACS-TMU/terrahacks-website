@@ -58,3 +58,7 @@ a:hover {
   color: blue;
   transition: ease-in-out 0.3s;
 }
+
+button:hover {
+  cursor: pointer;
+}

@@ -18,6 +18,7 @@ export default function Sponsors() {
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [showAfterImage, setShowAfterImage] = useState(false);
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [sponsorshipPackageUrl, setSponsorshipPackageUrl] = useState<string>("");
   const [sponsorsWithUrls, setSponsorsWithUrls] = useState<any[]>([]);
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const hasTriggeredRef = useRef(false);
@@ -32,12 +33,12 @@ export default function Sponsors() {
         .select("*")
         .eq("is_empty", false)
         .order("id", { ascending: true });
-      
+
       if (error) {
         console.error("Error fetching sponsors:", error);
         return;
       }
-      
+
       setSponsors(data || []);
 
       // Get public URLs for logos
@@ -54,6 +55,12 @@ export default function Sponsors() {
     };
 
     fetchSponsors();
+
+    // Get the sponsorship package URL
+    const sponsorshipPackageData = supabase.storage
+      .from("sponsors/sponsorship_package")
+      .getPublicUrl("sponsorship_package.pdf");
+    setSponsorshipPackageUrl(sponsorshipPackageData.data.publicUrl);
 
     // Get the before image URL
     const beforeData = supabase.storage
@@ -104,9 +111,15 @@ export default function Sponsors() {
 
       {/* Content */}
       <div className="max-w-4xl text-right mb-12">
-        <p className="text-base md:text-lg leading-relaxed text-gray-700">
+        <p className="text-base md:text-lg leading-relaxed text-gray-800 font-medium mb-4">
           We are grateful to our sponsors for their support; this event would not be possible without them! These contributions will help shape an unforgettable experience for all our attendees.
         </p>
+        <button
+          className="bg-green-600 text-background px-6 py-3 rounded-lg shadow hover:bg-green-700 transition-colors duration-300"
+          onClick={() => window.open(sponsorshipPackageUrl, "_blank")}
+        >
+          Sponsorship Package
+        </button>
       </div>
 
       {/* Sponsors grid */}
@@ -149,9 +162,8 @@ export default function Sponsors() {
           <img
             src={beforeImageUrl}
             alt="Sponsors - Before"
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
-              showAfterImage ? "opacity-0" : "opacity-100"
-            }`}
+            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
+              }`}
           />
         )}
 
@@ -160,9 +172,8 @@ export default function Sponsors() {
           <img
             src={afterImageUrl}
             alt="Sponsors - After"
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
-              showAfterImage ? "opacity-100" : "opacity-0"
-            }`}
+            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
+              }`}
           />
         )}
       </div>

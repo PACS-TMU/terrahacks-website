@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 
 interface FAQ {
     id: number;
@@ -13,37 +14,35 @@ export default function Faq() {
     const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
     const [afterImageUrl, setAfterImageUrl] = useState<string>("");
     const [showAfterImage, setShowAfterImage] = useState(false);
-    const [faqs, setFaq] = useState<FAQ[]>([]);
+    const [faqs, setFaqs] = useState<FAQ[]>([]);
+    const [expandedId, setExpandedId] = useState<number | null>(null);
     const imageContainerRef = useRef<HTMLDivElement>(null);
     const hasTriggeredRef = useRef(false);
 
     useEffect(() => {
         const supabase = createClient();
-        
-        // Fetch FAQ data
-        const fetchfaq = async () => {
+
+        const fetchFAQs = async () => {
             const { data, error } = await supabase
                 .from("faq")
                 .select("id, question, answer")
                 .order("id", { ascending: true });
-            
+
             if (error) {
                 console.error("Error fetching FAQs: ", error);
                 return;
             }
-            
-            setFaq(data || []);
+
+            setFaqs(data || []);
         };
-        
-        fetchfaq();
-        
-        // Get the before image URL
+
+        fetchFAQs();
+
         const beforeData = supabase.storage
             .from("main")
             .getPublicUrl("faq_before.png");
         setBeforeImageUrl(beforeData.data.publicUrl);
-        
-        // Preload the after image
+
         const afterData = supabase.storage
             .from("main")
             .getPublicUrl("faq_after.png");
@@ -60,16 +59,13 @@ export default function Faq() {
                     }
                 });
             },
-            {
-                threshold: 0.6,
-                rootMargin: "0px"
-            }
+            { threshold: 0.6 }
         );
 
         if (imageContainerRef.current) {
             observer.observe(imageContainerRef.current);
         }
-        
+
         return () => {
             if (imageContainerRef.current) {
                 observer.unobserve(imageContainerRef.current);
@@ -77,44 +73,66 @@ export default function Faq() {
         };
     }, []);
 
+    const toggleExpand = (id: number) => {
+        setExpandedId((prevId) => (prevId === id ? null : id));
+    };
+
     return (
-        <section className="main min-h-screen flex flex-col py-16 md:py-24">
-            {/* Header */}
+        <section className="main min-h-screen flex flex-col items-start py-16 md:py-24 px-4 md:px-20">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
                 FAQ
             </h2>
-            
-            {/* FAQ Items */}
-            <div className="max-w-6xl mb-12">
-                {faqs.map((faq) => (
-                    <div key={faq.id} className="faq-item mb-6">
-                        <h3 className="text-lg font-semibold mb-2">{faq.question}</h3>
-                        <p className="text-gray-700">{faq.answer}</p>
-                    </div>
-                ))} 
+
+            <div className="max-w-4xl w-full mb-12 px-4 md:px-0">
+                {faqs.map((faq) => {
+                    const isOpen = faq.id === expandedId;
+
+                    return (
+                        <div key={faq.id} className="mb-4 border border-gray-300 rounded-md overflow-hidden shadow-sm">
+                            <button
+                                onClick={() => toggleExpand(faq.id)}
+                                className="flex justify-between items-center w-full p-4 bg-gray-100 hover:bg-gray-200 transition-all"
+                                aria-expanded={isOpen}
+                                aria-controls={`faq-${faq.id}`}
+                            >
+                                <span className="text-left text-base font-semibold text-gray-900">
+                                    {faq.question}
+                                </span>
+                                {isOpen ? (
+                                    <IoChevronUp className="text-xl" />
+                                ) : (
+                                    <IoChevronDown className="text-xl" />
+                                )}
+                            </button>
+
+                            <div
+                                id={`faq-${faq.id}`}
+                                className={`transition-all duration-300 ease-in-out px-4 text-gray-800 font-medium ${isOpen ? "max-h-[300px] py-4 opacity-100" : "max-h-0 overflow-hidden opacity-0"
+                                    }`}
+                            >
+                                {faq.answer}
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
-            
-            {/* Image section */}
+
             <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative">
-                {/* Before image */}
                 {beforeImageUrl && (
                     <img
                         src={beforeImageUrl}
                         alt="FAQ - Before"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
-                            showAfterImage ? 'opacity-0' : 'opacity-100'
-                        }`}
+                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
+                            }`}
                     />
                 )}
-                
-                {/* After image */}
+
                 {afterImageUrl && (
                     <img
                         src={afterImageUrl}
                         alt="FAQ - After"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
-                            showAfterImage ? 'opacity-100' : 'opacity-0'
-                        }`}
+                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
+                            }`}
                     />
                 )}
             </div>
