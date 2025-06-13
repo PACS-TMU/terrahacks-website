@@ -2,17 +2,22 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
+
 interface FAQ {
     id: number;
     question: string;
     answer: string;
 }
+
 export default function Faq(){
     const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
     const [afterImageUrl, setAfterImageUrl] = useState<string>("");
     const [showAfterImage, setShowAfterImage] = useState(false);
+    const [observerReady, setObserverReady] = useState(false);
     const [faqs, setFaq] = useState<FAQ[]>([]);
     const sectionRef = useRef<HTMLElement>(null);
+    const hasTriggeredRef = useRef(false);
+
     useEffect(()=>{
         const supabase = createClient();
         const fetchfaq = async () => {
@@ -31,61 +36,76 @@ export default function Faq(){
             .from("main")
             .getPublicUrl("faq_before.png");
             setBeforeImageUrl(beforeData.data.publicUrl);
-        }, [])
-       useEffect(() => {
-    
-    let timeoutId: NodeJS.Timeout;
-    
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !showAfterImage) {
-            timeoutId = setTimeout(() => {
-              const supabase = createClient();
-              const afterData = supabase.storage
-                .from("main")
-                .getPublicUrl("faq_after.png");
-              
-              setAfterImageUrl(afterData.data.publicUrl);
-              setShowAfterImage(true);
-            }, 3000); 
-          }
-        });
-      },
-      {
-        threshold: 0.3,
-        rootMargin: "0px"
-      }
-    );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [showAfterImage]);
+        // Progressive delay: 1400ms for FAQ section
+        const readyTimeout = setTimeout(() => {
+            setObserverReady(true);
+        }, 1400);
+
+        return () => clearTimeout(readyTimeout);
+    }, []);
+
+    useEffect(() => {
+        if (!observerReady) return;
+    
+        let timeoutId: NodeJS.Timeout;
+        
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && !showAfterImage && !hasTriggeredRef.current) {
+                hasTriggeredRef.current = true;
+                
+                timeoutId = setTimeout(() => {
+                  const supabase = createClient();
+                  const afterData = supabase.storage
+                    .from("main")
+                    .getPublicUrl("faq_after.png");
+                  
+                  setAfterImageUrl(afterData.data.publicUrl);
+                  setShowAfterImage(true);
+                }, 3000); 
+              }
+            });
+          },
+          {
+            threshold: 0.5,
+            rootMargin: "-100px 0px"
+          }
+        );
+
+        if (sectionRef.current) {
+          observer.observe(sectionRef.current);
+        }
+        
+        return () => {
+          if (sectionRef.current) {
+            observer.unobserve(sectionRef.current);
+          }
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+        };
+    }, [showAfterImage, observerReady]);
+
     return (
          <section ref={sectionRef} className="main min-h-screen flex flex-col py-18 md:py-24">
-      {}
+      {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
         FAQ
       </h2>
-       {}
-        <div className="max-w-6xl ">{faqs.map((faq) => (
-            <div key={faq.id} className="faq-item mb-6">
-                <h3 className="text-m font-semibold mb-2">{faq.question}</h3>
-                <p className="text-gray-700">{faq.answer}</p>
-            </div>
-        ))} </div>
-         {}
+       {/* FAQ Items */}
+        <div className="max-w-6xl">
+            {faqs.map((faq) => (
+                <div key={faq.id} className="faq-item mb-6">
+                    <h3 className="text-m font-semibold mb-2">{faq.question}</h3>
+                    <p className="text-gray-700">{faq.answer}</p>
+                </div>
+            ))} 
+        </div>
+         {/* Image section */}
       <div className="flex-1 w-full min-h-[400px] relative">
-        {}
+        {/* Before image */}
         {beforeImageUrl && (
           <img
             src={beforeImageUrl}
@@ -96,7 +116,7 @@ export default function Faq(){
           />
         )}
         
-        {}
+        {/* After image */}
         {afterImageUrl && showAfterImage && (
           <img
             src={afterImageUrl}
@@ -104,6 +124,7 @@ export default function Faq(){
             className="absolute top-0 left-0 w-full h-auto opacity-100"
           />
         )}
-      </div></section>
+      </div>
+    </section>
     );
 }

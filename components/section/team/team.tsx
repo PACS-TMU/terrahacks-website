@@ -4,16 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Carasoul from "@/components/section/team/carasoul";
 
-
-
 export default function Team() {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [showAfterImage, setShowAfterImage] = useState(false);
-
-
-    //Caraou
+  const [observerReady, setObserverReady] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
     // Get the before image URL from Supabase
@@ -24,17 +21,26 @@ export default function Team() {
       .getPublicUrl("team_before.png");
     
     setBeforeImageUrl(beforeData.data.publicUrl);
+
+    // Progressive delay: 1600ms for Team section (last section)
+    const readyTimeout = setTimeout(() => {
+      setObserverReady(true);
+    }, 1600);
+
+    return () => clearTimeout(readyTimeout);
   }, []);
 
-    useEffect(() => {
-    // Set up intersection observer for scroll animation
+  useEffect(() => {
+    if (!observerReady) return;
+
     let timeoutId: NodeJS.Timeout;
     
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !showAfterImage) {
-            // Wait 3 seconds before loading and showing the after image
+          if (entry.isIntersecting && !showAfterImage && !hasTriggeredRef.current) {
+            hasTriggeredRef.current = true;
+            
             timeoutId = setTimeout(() => {
               const supabase = createClient();
               const afterData = supabase.storage
@@ -43,13 +49,13 @@ export default function Team() {
               
               setAfterImageUrl(afterData.data.publicUrl);
               setShowAfterImage(true);
-            }, 3000); // 3 second delay
+            }, 3000);
           }
         });
       },
       {
-        threshold: 0.3, // Trigger when 30% of section is visible
-        rootMargin: "0px"
+        threshold: 0.5,
+        rootMargin: "-100px 0px"
       }
     );
 
@@ -61,24 +67,21 @@ export default function Team() {
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
       }
-      // Clear timeout if component unmounts or user scrolls away
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
     };
-  }, [showAfterImage]);
+  }, [showAfterImage, observerReady]);
 
   return (
     <section ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24">
-
-   
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
         MEET THE TEAM
       </h2>
-         <Carasoul />
-      {/* Description */}
-
+      
+      <Carasoul />
+      
       {/* Image section - fills remaining space */}
       <div className="flex-1 w-full min-h-[400px] relative">
         {/* Before image - initially visible */}
@@ -101,9 +104,6 @@ export default function Team() {
           />
         )}
       </div>
-      
     </section>
-    
-    
   );
 }

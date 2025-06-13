@@ -17,9 +17,11 @@ export default function Sponsors() {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [showAfterImage, setShowAfterImage] = useState(false);
+  const [observerReady, setObserverReady] = useState(false);
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [sponsorsWithUrls, setSponsorsWithUrls] = useState<any[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
+  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -56,15 +58,26 @@ export default function Sponsors() {
       .from("main")
       .getPublicUrl("sponsors_before.png");
     setBeforeImageUrl(beforeData.data.publicUrl);
+
+    // Progressive delay: 1200ms for Sponsors section
+    const readyTimeout = setTimeout(() => {
+      setObserverReady(true);
+    }, 1200);
+
+    return () => clearTimeout(readyTimeout);
   }, []);
 
   useEffect(() => {
-    // ...existing intersection observer code...
+    if (!observerReady) return;
+
     let timeoutId: NodeJS.Timeout;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !showAfterImage) {
+          if (entry.isIntersecting && !showAfterImage && !hasTriggeredRef.current) {
+            hasTriggeredRef.current = true;
+            
             timeoutId = setTimeout(() => {
               const supabase = createClient();
               const afterData = supabase.storage
@@ -76,14 +89,25 @@ export default function Sponsors() {
           }
         });
       },
-      { threshold: 0.3, rootMargin: "0px" }
+      {
+        threshold: 0.5,
+        rootMargin: "-100px 0px"
+      }
     );
-    if (sectionRef.current) observer.observe(sectionRef.current);
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
     return () => {
-      if (sectionRef.current) observer.unobserve(sectionRef.current);
-      if (timeoutId) clearTimeout(timeoutId);
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
-  }, [showAfterImage]);
+  }, [showAfterImage, observerReady]);
 
   return (
     <section ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24 items-end">

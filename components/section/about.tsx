@@ -7,7 +7,9 @@ export default function About() {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [showAfterImage, setShowAfterImage] = useState(false);
+  const [observerReady, setObserverReady] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
     // Get the before image URL from Supabase
@@ -18,17 +20,26 @@ export default function About() {
       .getPublicUrl("about_before.png");
     
     setBeforeImageUrl(beforeData.data.publicUrl);
+
+    // Progressive delay: 1000ms for About section
+    const readyTimeout = setTimeout(() => {
+      setObserverReady(true);
+    }, 1000);
+
+    return () => clearTimeout(readyTimeout);
   }, []);
 
   useEffect(() => {
-    // Set up intersection observer for scroll animation
+    if (!observerReady) return;
+
     let timeoutId: NodeJS.Timeout;
     
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !showAfterImage) {
-            // Wait 3 seconds before loading and showing the after image
+          if (entry.isIntersecting && !showAfterImage && !hasTriggeredRef.current) {
+            hasTriggeredRef.current = true;
+            
             timeoutId = setTimeout(() => {
               const supabase = createClient();
               const afterData = supabase.storage
@@ -37,13 +48,13 @@ export default function About() {
               
               setAfterImageUrl(afterData.data.publicUrl);
               setShowAfterImage(true);
-            }, 3000); // 3 second delay
+            }, 3000);
           }
         });
       },
       {
-        threshold: 0.3, // Trigger when 30% of section is visible
-        rootMargin: "0px"
+        threshold: 0.5,
+        rootMargin: "-100px 0px"
       }
     );
 
@@ -55,12 +66,11 @@ export default function About() {
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
       }
-      // Clear timeout if component unmounts or user scrolls away
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
     };
-  }, [showAfterImage]);
+  }, [showAfterImage, observerReady]);
 
   return (
     <section ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24">
