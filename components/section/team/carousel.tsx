@@ -208,7 +208,7 @@ export default function Carousel() {
                             <h4 className="text-lg font-bold text-gray-800 mb-1">
                               {member.name}
                             </h4>
-                            <p className="text-sm text-blue-600 font-medium">
+                            <p className="text-sm text-gray-600 font-medium">
                               {member.position}
                             </p>
                           </div>
