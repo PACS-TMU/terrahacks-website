@@ -33,7 +33,7 @@ export default function Homepage() {
       </div>
 
       {/* Container for sections with background - starts immediately after hero */}
-      <div className="relative w-full -mt-1">
+      <div className="relative w-full -mt-1 pb-48 md:pb-150">
         {/* Background that covers this entire container */}
         <div className="absolute inset-0 z-0">
           {!imageLoaded && (

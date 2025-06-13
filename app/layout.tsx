@@ -2,6 +2,7 @@
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/navbar";
+import Image from "next/image";
 
 const defaultUrl = process.env.NEXT_PUBLIC_BASE_URL  
   ? `https://${process.env.NEXT_PUBLIC_BASE_URL}`
@@ -31,22 +32,35 @@ export default function RootLayout({
       <body className="bg-background text-foreground">
         <Navbar />
         {children}
+        
+        {/* MLH Trust Badge */}
+        <a 
+          id="mlh-trust-badge" 
+          style={{
+            display: 'block',
+            maxWidth: '100px',
+            minWidth: '60px',
+            position: 'fixed',
+            right: '50px',
+            top: '0',
+            width: '10%',
+            zIndex: 10000
+          }}
+          href="https://mlh.io/na?utm_source=na-hackathon&utm_medium=TrustBadge&utm_campaign=2026-season&utm_content=black" 
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+  src="https://s3.amazonaws.com/logged-assets/trust-badge/2026/mlh-trust-badge-2026-black.svg"
+  alt="Major League Hacking 2026 Hackathon Season"
+  width={100}
+  height={100}
+  className="w-full h-auto"
+/>
+        </a>
+        
         {/* <Top /> */}
       </body>
     </html>
   );
 }
-
-
-// export default function RootLayout({ children }) {
-//   return (
-//     <html lang="en">
-//       <body className={openSans.className}>
-//         <Navbar />
-//         {children}
-//         <Footer />
-//         <Top />
-//       </body>
-//     </html>
-//   );
-// }

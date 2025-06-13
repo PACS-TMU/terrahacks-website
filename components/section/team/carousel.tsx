@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FaUserCircle } from "react-icons/fa";
+import Image from "next/image";
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -35,7 +36,7 @@ export default function Carousel() {
         resolve(); // Skip preload for fallback
         return;
       }
-      const img = new Image();
+      const img = new window.Image(); // Use window.Image to avoid conflict
       img.onload = () => resolve();
       img.onerror = () => reject();
       img.src = src;
@@ -177,31 +178,28 @@ export default function Carousel() {
                             {member.img === "Unknown" ? (
                               <FaUserCircle className="w-24 h-24 md:w-28 md:h-28 text-gray-400 mx-auto" />
                             ) : (
-                              <>
+                              <div className="relative w-24 h-24 md:w-28 md:h-28 mx-auto">
                                 {!loadedImages.has(member.name) && (
-                                  <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gray-200 animate-pulse mx-auto border-4 border-white shadow-lg flex items-center justify-center">
+                                  <div className="absolute inset-0 rounded-full bg-gray-200 animate-pulse border-4 border-white shadow-lg flex items-center justify-center">
                                     <div className="text-gray-400 text-xs">
                                       Loading...
                                     </div>
                                   </div>
                                 )}
-                                <img
+                               <Image
                                   src={member.img}
                                   alt={member.name}
-                                  className={`w-24 h-24 md:w-28 md:h-28 rounded-full object-cover object-center mx-auto border-4 border-white shadow-lg transition-opacity duration-300 ${loadedImages.has(member.name)
+                                  width={112}
+                                  height={112}
+                                  className={`w-full h-full rounded-full object-cover border-4 border-white shadow-lg transition-opacity duration-300 ${
+                                    loadedImages.has(member.name)
                                       ? "opacity-100"
-                                      : "opacity-0 absolute top-0"
-                                    }`}
+                                      : "opacity-0"
+                                  }`}
                                   onLoad={() => handleImageLoad(member.name)}
-                                  onError={(e) => {
-                                    const target =
-                                      e.target as HTMLImageElement;
-                                    target.src = "";
-                                    handleImageLoad(member.name);
-                                  }}
-                                  loading="eager"
+                                  onError={() => handleImageLoad(member.name)}
                                 />
-                              </>
+                              </div>
                             )}
                           </div>
                           <div className="text-center">

@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { FaRegEnvelope, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 import { RiDiscordLine, RiTiktokLine } from "react-icons/ri";
 import { SiLinktree } from "react-icons/si";
+import Image from "next/image";
 
 export default function Contact() {
     const supabase = createClient();
@@ -67,7 +68,7 @@ export default function Contact() {
     }, []);
 
     return (
-        <section id="contact" className="main min-h-screen flex flex-col py-16 md:py-24 items-end">
+       <section id="contact" className="main min-h-screen flex flex-col py-16 md:py-24 items-start" style={{marginTop: '50px'}}>
             {/* Header */}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
                 CONTACT US
@@ -123,28 +124,34 @@ export default function Contact() {
                 </div>
             </div>
 
-            {/* Image section */}
+          {/* Image section - natural height, no cropping */}
             <div
                 ref={imageContainerRef}
-                className="w-full h-[400px] md:h-[500px] relative overflow-hidden mt-12"
+                className="w-full relative mt-8"
             >
                 {/* Before image */}
                 {beforeImageUrl && (
-                    <img
+                    <Image
                         src={beforeImageUrl}
                         alt="Contact - Before"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
-                            }`}
+                        width={1920}
+                        height={1080}
+                        className={`w-full h-auto transition-opacity duration-1000 ease-in-out ${
+                            showAfterImage ? "opacity-0" : "opacity-100"
+                        }`}
                     />
                 )}
 
                 {/* After image */}
                 {afterImageUrl && (
-                    <img
+                    <Image
                         src={afterImageUrl}
                         alt="Contact - After"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
-                            }`}
+                        width={1920}
+                        height={1080}
+                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
+                            showAfterImage ? "opacity-100" : "opacity-0"
+                        }`}
                     />
                 )}
             </div>

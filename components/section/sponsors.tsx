@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
 
 interface Sponsor {
   id: number;
@@ -135,9 +136,11 @@ export default function Sponsors() {
               title={sponsor.full_name}
             >
               {sponsor.imageUrl ? (
-                <img
+                <Image
                   src={sponsor.imageUrl}
                   alt={sponsor.full_name}
+                  width={1920}
+                  height={1080}
                   className="object-contain max-h-24 max-w-full grayscale group-hover:grayscale-0 transition"
                   style={{ maxHeight: 96 }}
                 />
@@ -159,7 +162,9 @@ export default function Sponsors() {
       <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative mt-16">
         {/* Before image - initially visible */}
         {beforeImageUrl && (
-          <img
+          <Image
+            width={1920}
+            height={1080}
             src={beforeImageUrl}
             alt="Sponsors - Before"
             className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
@@ -169,8 +174,10 @@ export default function Sponsors() {
 
         {/* After image - shown when scrolled into view */}
         {afterImageUrl && (
-          <img
+          <Image
             src={afterImageUrl}
+            width={1920}
+            height={1080}
             alt="Sponsors - After"
             className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
               }`}

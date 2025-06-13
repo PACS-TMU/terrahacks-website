@@ -1,8 +1,8 @@
 "use client";
-
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Carousel from "@/components/section/team/carousel";
+import Image from "next/image";
 import './team.css';
 
 export default function Team() {
@@ -14,13 +14,13 @@ export default function Team() {
 
   useEffect(() => {
     const supabase = createClient();
-    
+   
     // Get the before image URL
     const beforeData = supabase.storage
       .from("main")
       .getPublicUrl("team_before.png");
     setBeforeImageUrl(beforeData.data.publicUrl);
-    
+   
     // Preload the after image
     const afterData = supabase.storage
       .from("main")
@@ -61,27 +61,31 @@ export default function Team() {
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
         MEET THE TEAM
       </h2>
-      
+     
       <Carousel />
-      
-      {/* Image section - fills remaining space */}
-      <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative">
+     
+      {/* Image section - natural height, no cropping */}
+      <div ref={imageContainerRef} className="w-full relative mt-8">
         {/* Before image - initially visible */}
         {beforeImageUrl && (
-          <img
+          <Image
             src={beforeImageUrl}
             alt="Team - Before"
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
+            width={1920}
+            height={1080}
+            className={`w-full h-auto transition-opacity duration-1000 ease-in-out ${
               showAfterImage ? 'opacity-0' : 'opacity-100'
             }`}
           />
         )}
-        
+       
         {/* After image - shown when scrolled into view */}
         {afterImageUrl && (
-          <img
+          <Image
             src={afterImageUrl}
             alt="Team - After"
+            width={1920}
+            height={1080}
             className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
               showAfterImage ? 'opacity-100' : 'opacity-0'
             }`}

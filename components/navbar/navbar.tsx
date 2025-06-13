@@ -63,13 +63,15 @@ export default function Navbar() {
                         ))}
                     </ul>
                 </div>
-                <PortalBtn />
+                <div className="mr-30">
+                    <PortalBtn />
+                </div>
             </nav>
 
             {/* Mobile Navbar */}
             <nav
                 ref={ref}
-                className="flex lg:hidden flex-row w-full backdrop-blur-mobile text-white font-medium px-5 py-3 fixed justify-between h-16 z-50"
+                className="flex lg:hidden flex-row w-full backdrop-blur-mobile text-brown-300 font-medium px-5 py-3 fixed justify-between h-16 z-50"
             >
                 <NavbarLogo />
                 <button
@@ -85,8 +87,9 @@ export default function Navbar() {
                         size={28}
                     />
                 </button>
+                
                 {isExpandedMobile && (
-                    <div className="flex flex-col w-full absolute text-white space-y-4 gap-4 top-0 right-0 h-screen items-center mt-16 pt-8 backdrop-blur-mobile">
+                    <div className="flex flex-col w-full absolute text-brown-300 space-y-4 gap-4 top-0 right-0 h-screen items-center mt-16 pt-8 backdrop-blur-mobile">
                         <PortalBtn />
                         {navItems.map((item) => (
                             <Link

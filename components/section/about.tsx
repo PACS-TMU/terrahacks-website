@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
 
 export default function About() {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
@@ -74,9 +75,11 @@ export default function About() {
       <div className="flex-1 w-full min-h-[400px] relative">
         {/* Before image - initially visible */}
         {beforeImageUrl && (
-          <img
+          <Image
             src={beforeImageUrl}
             alt="About TerraHacks - Before"
+            width={1920}
+            height={1080}
             className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
               showAfterImage ? 'opacity-0' : 'opacity-100'
             }`}
@@ -85,9 +88,11 @@ export default function About() {
         
         {/* After image - shown immediately when scrolled into view */}
         {afterImageUrl && (
-          <img
+          <Image
             src={afterImageUrl}
             alt="About TerraHacks - After"
+            width={1920}
+            height={1080}
             className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
               showAfterImage ? 'opacity-100' : 'opacity-0'
             }`}

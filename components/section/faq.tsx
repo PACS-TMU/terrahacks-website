@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
+import Image from "next/image";
 
 interface FAQ {
     id: number;
@@ -117,22 +118,31 @@ export default function Faq() {
                 })}
             </div>
 
-            <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative">
+            {/* Image section - natural height, no cropping */}
+            <div ref={imageContainerRef} className="w-full relative mt-8">
+                {/* Before image - initially visible */}
                 {beforeImageUrl && (
-                    <img
+                    <Image
                         src={beforeImageUrl}
                         alt="FAQ - Before"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
-                            }`}
+                        width={1920}
+                        height={1080}
+                        className={`w-full h-auto transition-opacity duration-1000 ease-in-out ${
+                            showAfterImage ? "opacity-0" : "opacity-100"
+                        }`}
                     />
                 )}
 
+                {/* After image - shown when scrolled into view */}
                 {afterImageUrl && (
-                    <img
+                    <Image
                         src={afterImageUrl}
                         alt="FAQ - After"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
-                            }`}
+                        width={1920}
+                        height={1080}
+                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
+                            showAfterImage ? "opacity-100" : "opacity-0"
+                        }`}
                     />
                 )}
             </div>
