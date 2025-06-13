@@ -55,7 +55,7 @@ export default function About() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24">
+    <section id="about" ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
         ABOUT TERRAHACKS

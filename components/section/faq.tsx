@@ -78,7 +78,7 @@ export default function Faq() {
     };
 
     return (
-        <section className="main min-h-screen flex flex-col items-start py-16 md:py-24 px-4 md:px-20">
+        <section id="faq" className="main min-h-screen flex flex-col items-start py-16 md:py-24 px-4 md:px-20">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
                 FAQ
             </h2>

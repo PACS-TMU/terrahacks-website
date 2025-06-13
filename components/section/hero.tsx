@@ -32,7 +32,7 @@ export default function Hero() {
     }, []);
    
     return (
-        <div className="relative block" style={{ marginBottom: '0', paddingBottom: '0' }}>
+        <section id="hero" className="relative block" style={{ marginBottom: '0', paddingBottom: '0' }}>
             {/* Background Image */}
             {imageUrl && (
                 <Image
@@ -48,7 +48,7 @@ export default function Hero() {
            
             {/* Logo Container with Flip Animation - Moved up to create space below */}
             <div className="absolute inset-0 flex flex-col items-center justify-center -mt-16 lg:-mt-20 xl:-mt-24">
-                <div className="relative w-[450px] h-[450px] lg:w-[550px] lg:h-[550px] xl:w-[650px] xl:h-[650px] group cursor-pointer">
+                <div className="relative w-[450px] h-[450px] lg:w-[550px] lg:h-[550px] xl:w-[650px] xl:h-[650px] group">
                     {/* Container for flip animation */}
                     <div
                         className="relative w-full h-full transition-transform duration-700 group-hover:[transform:rotateY(180deg)]"
@@ -96,17 +96,17 @@ export default function Hero() {
                     {/* Click here to start - Now above the date */}
                     <Link 
                         href="/newsletter" 
-                        className="text-white text-3xl lg:text-4xl xl:text-5xl font-bold text-center drop-shadow-lg text-[#5D2A15] hover:opacity-80 transition-opacity duration-300"
+                        className="text-3xl lg:text-4xl xl:text-5xl font-bold text-center drop-shadow-lg text-[#5D2A15] underline hover:opacity-80 transition-opacity duration-300"
                     >
                         Click Here To Start
                     </Link>
                     
                     {/* Date and location info - Now below the click text */}
-                    <p className="text-white text-center drop-shadow-lg text-[#5D2A15]">
+                    <p className="text-center drop-shadow-lg text-[#5D2A15]">
                        August 1st 2025 - August 3rd 2025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hosted at Toronto Metropolitan University
                     </p>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }

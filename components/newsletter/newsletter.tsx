@@ -8,7 +8,7 @@ import { SubmitButton } from "@/components/form/submit-button";
 import InputField from "@/components/newsletter/input-field";
 
 interface NewsletterProps {
-  message: Message;
+  message?: Message | null;
 }
 
 export default function Newsletter({ message }: NewsletterProps) {
@@ -86,7 +86,7 @@ export default function Newsletter({ message }: NewsletterProps) {
             Dig in!
           </SubmitButton>
 
-          <FormMessage message={message} />
+          <FormMessage message={message ?? undefined} />
         </form>
       </div>
     </section>

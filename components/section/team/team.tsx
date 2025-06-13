@@ -56,7 +56,7 @@ export default function Team() {
   }, []);
 
   return (
-    <section className="main min-h-screen flex flex-col py-16 md:py-24">
+    <section id="team" className="main min-h-screen flex flex-col py-16 md:py-24">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
         MEET THE TEAM

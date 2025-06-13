@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Home from "@/components/section/home";
 import About from "@/components/section/about";
 import Sponsors from "@/components/section/sponsors";
 import Faq from "@/components/section/faq";
 import Team from "@/components/section/team/team";
 import Contact from "@/components/section/contact";
-import Navbar from "@/components/navbar/navbar";
 import Hero from "@/components/section/hero";
 import { createClient } from "@/utils/supabase/client";
-import Footer from "@/components/footer";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 export default function Homepage() {
   const [backgroundUrl, setBackgroundUrl] = useState<string>("");
@@ -28,9 +26,7 @@ export default function Homepage() {
   }, []);
 
   return (
-    <div className="w-full">
-      <Navbar />
-      
+    <div className="w-full">   
       {/* Hero section */}
       <div className="relative z-20">
         <Hero />
@@ -64,7 +60,7 @@ export default function Homepage() {
           <Faq />
           <Team />
           <Contact />
-          <Footer/>
+          <Footer />
         </div>
       </div>
     </div>

@@ -1,8 +1,7 @@
 // import { Geist } from "next/font/google";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
-// import Navbar from "@/components/navbar/navbar";
-// import Footer from "@/components/footer";
+import Navbar from "@/components/navbar/navbar";
 
 const defaultUrl = process.env.NEXT_PUBLIC_BASE_URL  
   ? `https://${process.env.NEXT_PUBLIC_BASE_URL}`
@@ -30,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={openSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
+        <Navbar />
         {children}
+        {/* <Top /> */}
       </body>
     </html>
   );
