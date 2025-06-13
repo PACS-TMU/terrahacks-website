@@ -8,42 +8,31 @@ export default function Team() {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [showAfterImage, setShowAfterImage] = useState(false);
-  const [observerReady, setObserverReady] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
   const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
-    // Get the before image URL from Supabase
     const supabase = createClient();
     
+    // Get the before image URL
     const beforeData = supabase.storage
       .from("main")
       .getPublicUrl("team_before.png");
-    
     setBeforeImageUrl(beforeData.data.publicUrl);
-
-    // Set observer ready after 1000ms
-    const readyTimeout = setTimeout(() => {
-      setObserverReady(true);
-    }, 1000);
-
-    return () => clearTimeout(readyTimeout);
+    
+    // Preload the after image
+    const afterData = supabase.storage
+      .from("main")
+      .getPublicUrl("team_after.png");
+    setAfterImageUrl(afterData.data.publicUrl);
   }, []);
 
   useEffect(() => {
-    if (!observerReady) return;
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !hasTriggeredRef.current) {
             hasTriggeredRef.current = true;
-            // Load after image and show it immediately
-            const supabase = createClient();
-            const afterData = supabase.storage
-              .from("main")
-              .getPublicUrl("team_after.png");
-            setAfterImageUrl(afterData.data.publicUrl);
             setShowAfterImage(true);
           }
         });
@@ -54,19 +43,19 @@ export default function Team() {
       }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    if (imageContainerRef.current) {
+      observer.observe(imageContainerRef.current);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (imageContainerRef.current) {
+        observer.unobserve(imageContainerRef.current);
       }
     };
-  }, [observerReady]);
+  }, []);
 
   return (
-    <section ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24">
+    <section className="main min-h-screen flex flex-col py-16 md:py-24">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
         MEET THE TEAM
@@ -75,24 +64,26 @@ export default function Team() {
       <Carasoul />
       
       {/* Image section - fills remaining space */}
-      <div className="flex-1 w-full min-h-[400px] relative">
+      <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative">
         {/* Before image - initially visible */}
         {beforeImageUrl && (
           <img
             src={beforeImageUrl}
-            alt="About TerraHacks - Before"
+            alt="Team - Before"
             className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
               showAfterImage ? 'opacity-0' : 'opacity-100'
             }`}
           />
         )}
         
-        {/* After image - shown immediately when scrolled into view */}
-        {afterImageUrl && showAfterImage && (
+        {/* After image - shown when scrolled into view */}
+        {afterImageUrl && (
           <img
             src={afterImageUrl}
-            alt="About TerraHacks - After"
-            className="absolute top-0 left-0 w-full h-auto opacity-100"
+            alt="Team - After"
+            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
+              showAfterImage ? 'opacity-100' : 'opacity-0'
+            }`}
           />
         )}
       </div>
