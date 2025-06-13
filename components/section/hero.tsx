@@ -15,7 +15,7 @@ export default function Hero() {
         // Get the hero background image URL
         const imageData = supabase.storage
             .from("main")
-            .getPublicUrl("hero_background.png");
+            .getPublicUrl("hero_background2.png");
         setImageUrl(imageData.data.publicUrl);
        
         // Get the logo before and after images
@@ -32,7 +32,7 @@ export default function Hero() {
     }, []);
    
     return (
-        <div className="relative">
+        <div className="relative block" style={{ marginBottom: '0', paddingBottom: '0' }}>
             {/* Background Image */}
             {imageUrl && (
                 <Image
@@ -41,7 +41,8 @@ export default function Hero() {
                     width={1920}
                     height={1080}
                     priority={true}
-                    className="w-full h-auto object-contain"
+                    className="w-full object-cover"
+                    style={{ display: 'block', marginBottom: '0', height: 'auto' }}
                 />
             )}
            
@@ -72,7 +73,7 @@ export default function Hero() {
                         {/* Back Logo (logoAfter) - rotated 180 degrees initially */}
                         {logoAfter && (
                             <div
-                                className="absolute inset-0 w-full h-ful scale-0"
+                                className="absolute inset-0 w-full h-full"
                                 style={{
                                     backfaceVisibility: 'hidden',
                                     transform: 'rotateY(180deg)'
