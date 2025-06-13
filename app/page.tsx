@@ -12,7 +12,12 @@ import Image from "next/image";
 
 export default function Homepage() {
   const [backgroundUrl, setBackgroundUrl] = useState<string>("");
-  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const [imageAspectRatio, setImageAspectRatio] = useState<number>(0);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Estimated aspect ratio for your background image
+  // Adjust this based on your actual image dimensions
+  const ESTIMATED_ASPECT_RATIO = 0.5625; // 16:9 aspect ratio (9/16)
 
   useEffect(() => {
     // Get the background image URL from Supabase
@@ -23,49 +28,50 @@ export default function Homepage() {
     
     setBackgroundUrl(data.publicUrl);
 
-    // Load image to get its natural dimensions
+    // Preload image to get its aspect ratio
     if (data.publicUrl) {
       const img = new window.Image();
       img.onload = () => {
-        setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
+        const aspectRatio = img.naturalHeight / img.naturalWidth;
+        setImageAspectRatio(aspectRatio);
+        setImageLoaded(true);
       };
       img.src = data.publicUrl;
     }
   }, []);
 
-  // Calculate the minimum height needed to show the full image
-  const calculateMinHeight = () => {
-    if (imageSize.width && imageSize.height) {
-      const aspectRatio = imageSize.height / imageSize.width;
-      if (typeof window !== 'undefined') {
-        return window.innerWidth * aspectRatio;
-      }
-    }
-    return 0;
-  };
-
   return (
     <div className="relative">
-      {/* Background container - fixed positioning to prevent layout shifts */}
-      <div className="fixed inset-0 w-full h-full">
+      {/* Background container - no transition for immediate full size */}
+      <div 
+        className="absolute inset-x-0 top-0 w-full"
+        style={{ 
+          paddingBottom: `${(imageAspectRatio || ESTIMATED_ASPECT_RATIO) * 100}%`
+        }}
+      >
+        {/* Placeholder background while image loads */}
+        {!imageLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-b from-green-50 to-blue-50 animate-pulse" />
+        )}
+        
         {backgroundUrl && (
           <Image
             src={backgroundUrl}
             alt="TerraHacks background"
             fill
-            className="object-cover object-top"
+            className="object-contain object-top"
             sizes="100vw"
             priority
             quality={90}
-            placeholder="empty"
+            onLoadingComplete={() => setImageLoaded(true)}
           />
         )}
       </div>
       
-      {/* Content wrapper with proper spacing */}
+      {/* Content wrapper */}
       <div className="relative z-10">
         {/* Sections container */}
-        <div className="min-h-screen">
+        <div>
           <Home />
           <About />
           <Sponsors />
