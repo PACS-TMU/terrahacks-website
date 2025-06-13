@@ -4,6 +4,7 @@ import Sponsors from "@/components/section/sponsors";
 import Faq from "@/components/section/faq";
 import Team from "@/components/section/team";
 import Contact from "@/components/section/contact";
+import Footer from "@/components/footer";
 
 export default function Homepage() {
   return (
@@ -15,6 +16,7 @@ export default function Homepage() {
       <Faq />
       <Team />
       <Contact />
+      <Footer />
     </>
   );
 }
