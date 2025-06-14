@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FaUserCircle } from "react-icons/fa";
@@ -43,7 +43,7 @@ export default function Carousel() {
     });
   };
 
-  const preloadAllImages = async (members: TeamMember[]) => {
+  const preloadAllImages = useCallback(async (members: TeamMember[]) => {
     try {
       const imagePromises = members.map(member => preloadImage(member.img));
       await Promise.allSettled(imagePromises);
@@ -51,7 +51,7 @@ export default function Carousel() {
     } catch {
       setImagesLoaded(true);
     }
-  };
+  }, []);
 
   const groupByCommittee = (members: TeamMember[]): CommitteeGroup[] => {
     const grouped = members.reduce((acc, member) => {
@@ -101,7 +101,7 @@ export default function Carousel() {
     };
 
     fetchTeamMembers();
-  }, []);
+  }, [preloadAllImages]);
 
   const handleImageLoad = (name: string) => {
     setLoadedImages(prev => new Set([...Array.from(prev), name]));

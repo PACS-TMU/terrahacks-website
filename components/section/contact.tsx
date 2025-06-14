@@ -29,7 +29,7 @@ export default function Contact() {
             .from("main")
             .getPublicUrl("contact.png");
         setImageUrl(imageData.data.publicUrl);
-    }, []);
+    }, [supabase.storage]);
 
     return (
         <section id="contact" className="main min-h-[95vh] flex flex-col pb-16 md:pb-24 items-start" style={{ marginTop: '50px' }}>
