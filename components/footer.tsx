@@ -6,7 +6,7 @@ import React from "react";
 
 export default function Footer() {
     return (
-        <footer id="footer" className="bg-transparent text-background py-12">
+        <footer id="footer" className="bg-transparent text-background pt-12">
             <div className="main flex flex-col items-center justify-center space-y-6">
                 <div id="terrahacks-links" className="flex flex-row items-center justify-between w-[90%] md:w-[60%] lg:w-[40%] 2xl:w-[35%] text-background pt-2 mt-2 xl:mt-6 3xl:pt-4 3xl:mt-6">
                     <a

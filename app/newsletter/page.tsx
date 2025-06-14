@@ -23,7 +23,7 @@ export default async function NewsletterPage({
   }
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden flex items-center justify-center px-4 py-24">
+    <section className="relative w-full min-h-[95vh] overflow-hidden flex items-center justify-center px-4 py-24">
       {/* Background image */}
       {data.publicUrl && (
         <Image

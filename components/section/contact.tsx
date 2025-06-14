@@ -6,6 +6,7 @@ import { FaRegEnvelope, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 import { RiDiscordLine, RiTiktokLine } from "react-icons/ri";
 import { SiLinktree } from "react-icons/si";
 import Image from "next/image";
+import Platforms from "../platforms";
 
 export default function Contact() {
     const supabase = createClient();
@@ -68,7 +69,7 @@ export default function Contact() {
     }, []);
 
     return (
-       <section id="contact" className="main min-h-screen flex flex-col py-16 md:py-24 items-start" style={{marginTop: '50px'}}>
+        <section id="contact" className="main min-h-[95vh] flex flex-col pb-16 md:pb-24 items-start" style={{ marginTop: '50px' }}>
             {/* Header */}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
                 CONTACT US
@@ -124,37 +125,13 @@ export default function Contact() {
                 </div>
             </div>
 
-          {/* Image section - natural height, no cropping */}
-            <div
+            {/* Image section - natural height, no cropping */}
+            <Platforms
+                beforeImageUrl={beforeImageUrl}
+                afterImageUrl={afterImageUrl}
+                showAfterImage={showAfterImage}
                 ref={imageContainerRef}
-                className="w-full relative mt-8"
-            >
-                {/* Before image */}
-                {beforeImageUrl && (
-                    <Image
-                        src={beforeImageUrl}
-                        alt="Contact - Before"
-                        width={1920}
-                        height={1080}
-                        className={`w-full h-auto transition-opacity duration-1000 ease-in-out ${
-                            showAfterImage ? "opacity-0" : "opacity-100"
-                        }`}
-                    />
-                )}
-
-                {/* After image */}
-                {afterImageUrl && (
-                    <Image
-                        src={afterImageUrl}
-                        alt="Contact - After"
-                        width={1920}
-                        height={1080}
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
-                            showAfterImage ? "opacity-100" : "opacity-0"
-                        }`}
-                    />
-                )}
-            </div>
+            />
         </section>
     );
 }

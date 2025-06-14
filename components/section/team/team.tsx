@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Carousel from "@/components/section/team/carousel";
-import Image from "next/image";
+import Platforms from "@/components/platforms";
 import './team.css';
 
 export default function Team() {
@@ -14,13 +14,13 @@ export default function Team() {
 
   useEffect(() => {
     const supabase = createClient();
-   
+
     // Get the before image URL
     const beforeData = supabase.storage
       .from("main")
       .getPublicUrl("team_before.png");
     setBeforeImageUrl(beforeData.data.publicUrl);
-   
+
     // Preload the after image
     const afterData = supabase.storage
       .from("main")
@@ -56,42 +56,21 @@ export default function Team() {
   }, []);
 
   return (
-    <section id="team" className="main min-h-screen flex flex-col py-16 md:py-24">
+    <section id="team" className="main min-h-[95vh] flex flex-col pb-16 md:pb-24">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
         MEET THE TEAM
       </h2>
-     
+
       <Carousel />
-     
+
       {/* Image section - natural height, no cropping */}
-      <div ref={imageContainerRef} className="w-full relative mt-8">
-        {/* Before image - initially visible */}
-        {beforeImageUrl && (
-          <Image
-            src={beforeImageUrl}
-            alt="Team - Before"
-            width={1920}
-            height={1080}
-            className={`w-full h-auto transition-opacity duration-1000 ease-in-out ${
-              showAfterImage ? 'opacity-0' : 'opacity-100'
-            }`}
-          />
-        )}
-       
-        {/* After image - shown when scrolled into view */}
-        {afterImageUrl && (
-          <Image
-            src={afterImageUrl}
-            alt="Team - After"
-            width={1920}
-            height={1080}
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
-              showAfterImage ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-        )}
-      </div>
+      <Platforms
+        beforeImageUrl={beforeImageUrl}
+        afterImageUrl={afterImageUrl}
+        showAfterImage={showAfterImage}
+        ref={imageContainerRef}
+      />
     </section>
   );
 }

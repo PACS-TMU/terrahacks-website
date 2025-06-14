@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
+import Platforms from "../platforms";
 
 interface Sponsor {
   id: number;
@@ -104,7 +105,7 @@ export default function Sponsors() {
   }, []);
 
   return (
-    <section id="sponsors" className="main min-h-screen flex flex-col py-16 md:py-24 items-end">
+    <section id="sponsors" className="main min-h-[95vh] flex flex-col pb-16 md:pb-24 items-end">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
         OUR SPONSORS
@@ -159,31 +160,13 @@ export default function Sponsors() {
       </div>
 
       {/* Image section - fills remaining space */}
-      <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative mt-16">
-        {/* Before image - initially visible */}
-        {beforeImageUrl && (
-          <Image
-            width={1920}
-            height={1080}
-            src={beforeImageUrl}
-            alt="Sponsors - Before"
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
-              }`}
-          />
-        )}
-
-        {/* After image - shown when scrolled into view */}
-        {afterImageUrl && (
-          <Image
-            src={afterImageUrl}
-            width={1920}
-            height={1080}
-            alt="Sponsors - After"
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
-              }`}
-          />
-        )}
-      </div>
+      <Platforms
+        beforeImageUrl={beforeImageUrl}
+        afterImageUrl={afterImageUrl}
+        showAfterImage={showAfterImage}
+        alt="Sponsors Section Platforms"
+        ref={imageContainerRef}
+      />
     </section>
   );
 }

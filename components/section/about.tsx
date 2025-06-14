@@ -3,22 +3,23 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
+import Platforms from "@/components/platforms";
 
 export default function About() {
   const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
   const [afterImageUrl, setAfterImageUrl] = useState<string>("");
   const [showAfterImage, setShowAfterImage] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
   const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
     // Get the before image URL from Supabase
     const supabase = createClient();
-    
+
     const beforeData = supabase.storage
       .from("main")
       .getPublicUrl("about_before.png");
-    
+
     setBeforeImageUrl(beforeData.data.publicUrl);
 
     // Preload the after image
@@ -44,24 +45,24 @@ export default function About() {
       }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    if (imageContainerRef.current) {
+      observer.observe(imageContainerRef.current);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (imageContainerRef.current) {
+        observer.unobserve(imageContainerRef.current);
       }
     };
   }, []);
 
   return (
-    <section id="about" ref={sectionRef} className="main min-h-screen flex flex-col py-16 md:py-24">
+    <section id="about" ref={imageContainerRef} className="main min-h-[95vh] flex flex-col pt-16 md:pt-24">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
         ABOUT TERRAHACKS
       </h2>
-      
+
       {/* Content */}
       <div className="max-w-4xl">
         <p className="text-base md:text-lg leading-relaxed text-gray-800 font-medium">
@@ -72,33 +73,13 @@ export default function About() {
       </div>
 
       {/* Image section - fills remaining space */}
-      <div className="flex-1 w-full min-h-[400px] relative">
-        {/* Before image - initially visible */}
-        {beforeImageUrl && (
-          <Image
-            src={beforeImageUrl}
-            alt="About TerraHacks - Before"
-            width={1920}
-            height={1080}
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
-              showAfterImage ? 'opacity-0' : 'opacity-100'
-            }`}
-          />
-        )}
-        
-        {/* After image - shown immediately when scrolled into view */}
-        {afterImageUrl && (
-          <Image
-            src={afterImageUrl}
-            alt="About TerraHacks - After"
-            width={1920}
-            height={1080}
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${
-              showAfterImage ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-        )}
-      </div>
+      <Platforms
+        beforeImageUrl={beforeImageUrl}
+        afterImageUrl={afterImageUrl}
+        showAfterImage={showAfterImage}
+        alt="About Section Platforms"
+        ref={imageContainerRef}
+      />
     </section>
   );
 }

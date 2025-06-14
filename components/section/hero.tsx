@@ -101,7 +101,7 @@ export default function Hero() {
                     </Link>
                     
                     {/* Date and location info - Responsive and better mobile layout */}
-                    <div className="text-center drop-shadow-lg text-[#5D2A15] text-sm sm:text-base lg:text-lg">
+                    <div className="text-center drop-shadow-lg text-[#5D2A15] font-semibold text-sm sm:text-base lg:text-lg">
                         <p className="block sm:hidden">
                             August 1st - 3rd, 2025<br />
                             Toronto Metropolitan University

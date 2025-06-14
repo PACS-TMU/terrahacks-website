@@ -33,7 +33,7 @@ export default function Homepage() {
       </div>
 
       {/* Container for sections with background - starts immediately after hero */}
-      <div className="relative w-full -mt-1 pb-48 md:pb-150">
+      <div className="relative w-full -mt-1 pb-12">
         {/* Background that covers this entire container */}
         <div className="absolute inset-0 z-0">
           {!imageLoaded && (
@@ -44,6 +44,8 @@ export default function Homepage() {
               src={backgroundUrl}
               alt="TerraHacks background"
               fill
+              sizes="100vw"
+              quality={100}
               className="object-cover"
               onLoad={() => setImageLoaded(true)}
               priority
