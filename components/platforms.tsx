@@ -16,6 +16,7 @@ export default function Platforms({
         alt={alt}
         width={1920}
         height={1080}
+        priority={true}
         className="w-full h-auto transition-opacity duration-1000"
       />
     </div>

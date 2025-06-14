@@ -21,13 +21,14 @@ export default function Homepage() {
       {/* Container for sections with background - starts immediately after hero */}
       <div className="relative w-full -mt-1 pb-12">
         {/* Background that covers this entire container */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 min-h-screen">
           <Image
             src="/assets/background.png"
             alt="Background Gradient"
             fill
             className="object-cover"
             priority
+            unoptimized
           />
           <div className="absolute inset-0 bg-black/5" />
         </div>

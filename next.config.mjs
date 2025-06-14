@@ -21,6 +21,18 @@ const nextConfig = {
         port: '',
         pathname: '/storage/v1/object/public/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'dev.terrahacks.ca',
+        port: '',
+        pathname: '/assets/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'terrahacks.ca',
+        port: '',
+        pathname: '/assets/**',
+      }
     ],
   },
   webpack: (config) => {

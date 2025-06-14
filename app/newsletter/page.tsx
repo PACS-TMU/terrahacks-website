@@ -2,8 +2,8 @@ import { subscribeToNewsletterAction } from "@/server/subscribe-to-newsletter";
 import { Message, FormMessage } from "@/components/form/form-message";
 import InputField from "@/components/newsletter/input-field";
 import { SubmitButton } from "@/components/form/submit-button";
-import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 export default async function NewsletterPage({
   searchParams,
@@ -11,9 +11,6 @@ export default async function NewsletterPage({
   searchParams: Promise<{ [key: string]: string }>;
 }) {
   const params = await searchParams;
-
-  const supabase = await createClient();
-  const { data } = supabase.storage.from("main").getPublicUrl("Background.png");
 
   let message: Message | null = null;
   if (params.success) {
@@ -23,16 +20,16 @@ export default async function NewsletterPage({
   }
 
   return (
-    <section className="relative w-full min-h-[95vh] overflow-hidden flex items-center justify-center px-4 py-24">
+    <section className="relative w-full min-h-[95vh] overflow-hidden flex flex-col items-center justify-center px-4 pt-24 md:pt-32 lg:pt-40">
       {/* Background image */}
-      {data.publicUrl && (
-        <Image
-          fill
-          src={data.publicUrl}
-          alt="TerraHacks background"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      )}
+
+      <Image
+        fill
+        src={`/assets/background.png`}
+        alt="TerraHacks background"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+
       <div className="relative z-10 w-full max-w-xl bg-white bg-opacity-90 border border-gray-300 rounded-lg shadow-xl px-6 md:px-10 py-10 flex flex-col gap-6">
         <h1 className="font-semibold text-center text-2xl md:text-3xl lg:text-4xl text-gray-800">
           Dig into our Newsletter
@@ -80,6 +77,7 @@ export default async function NewsletterPage({
           <FormMessage message={message ?? undefined} />
         </form>
       </div>
+      <Footer />
     </section>
   );
 }
