@@ -42,7 +42,7 @@ export default function Navbar() {
     return (
         <>
             {/* Desktop Navbar */}
-            <nav className="hidden lg:flex flex-row w-full bg-transparent backdrop-blur-laptop text-[#5D2A15] font-bold px-10 py-3 fixed justify-between z-50">
+            <nav className="hidden lg:flex flex-row w-full bg-transparent backdrop-blur-[15px] text-[#5D2A15] font-bold px-10 py-3 fixed justify-between z-50">
                 <div className="flex flex-row">
                     <ul className="flex justify-center w-full items-center gap-12 2xl:gap-16 ml-4">
                         <li>
@@ -71,7 +71,7 @@ export default function Navbar() {
             {/* Mobile Navbar */}
             <nav
                 ref={ref}
-                className="flex lg:hidden flex-row w-full backdrop-blur-mobile text-[#5D2A15] font-bold px-5 py-3 fixed justify-between h-16 z-50"
+                className="flex lg:hidden flex-row w-full backdrop-blur-[15px] text-[#5D2A15] font-bold px-5 py-3 fixed justify-between h-16 z-50"
             >
                 <NavbarLogo />
                 <button

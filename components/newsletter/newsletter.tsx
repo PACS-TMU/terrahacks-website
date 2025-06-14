@@ -39,7 +39,7 @@ export default function Newsletter({ message }: NewsletterProps) {
           />
         )}
         {/* Optional overlay for contrast */}
-        <div className="absolute inset-0 bg-white/60 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-white/60 backdrop-blur-[10px]" />
       </div>
 
       {/* Foreground content */}
