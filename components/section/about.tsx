@@ -57,7 +57,7 @@ export default function About() {
   }, []);
 
   return (
-    <section id="about" ref={imageContainerRef} className="main min-h-[95vh] flex flex-col pt-16 md:pt-24">
+    <section id="about" ref={imageContainerRef} className="main min-h-[95vh] flex flex-col pt-32 md:pt-24">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
         ABOUT TERRAHACKS

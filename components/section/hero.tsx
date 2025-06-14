@@ -32,7 +32,7 @@ export default function Hero() {
     }, []);
    
     return (
-        <section id="hero" className="relative block pt-35 lg:pt-0" style={{ marginBottom: '0', paddingBottom: '0' }}>
+        <section id="hero" className="relative block pt-35 lg:pt-0 mb-0 pb-0">
             {/* Background Image */}
             {imageUrl && (
                 <Image

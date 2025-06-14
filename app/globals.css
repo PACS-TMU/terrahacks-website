@@ -67,8 +67,7 @@ button:hover {
 
 /* Custom CSS */
 .backdrop-blur-laptop,
-.backdrop-blur-mobile,
-.backdrop-blur-nav-items {
+.backdrop-blur-mobile {
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
 }

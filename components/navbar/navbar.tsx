@@ -87,19 +87,21 @@ export default function Navbar() {
                         size={28}
                     />
                 </button>
-                
+
                 {isExpandedMobile && (
-                    <div className="flex flex-col w-full absolute text-brown-300 space-y-4 gap-4 top-0 right-0 h-screen items-center mt-16 pt-8 backdrop-blur-mobile">
+                    <div className="flex flex-col w-full absolute top-0 right-0 h-screen items-center mt-16 pt-8 bg-background z-40 space-y-4 gap-4">
                         <PortalBtn />
+                        <hr className="w-full border-t border-brown-300" />
                         {navItems.map((item) => (
-                            <Link
-                                key={item.id}
-                                href={`#${item.sectionId}`}
-                                className="text-xl hover:text-brown-300 transition-colors duration-300"
-                                onClick={() => setIsExpandedMobile(false)}
-                            >
-                                {item.label}
-                            </Link>
+                            <div key={item.id} className="w-full text-xl hover:text-brown-300 transition-colors duration-300">
+                                <Link
+                                    href={`#${item.sectionId}`}
+                                    onClick={() => setIsExpandedMobile(false)}
+                                    className="w-full text-center flex items-center justify-center py-2 px-4 hover:bg-brown-100 rounded-md"
+                                >
+                                    {item.label}
+                                </Link>
+                            </div>
                         ))}
                     </div>
                 )}
