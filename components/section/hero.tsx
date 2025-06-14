@@ -15,7 +15,7 @@ export default function Hero() {
         // Get the hero background image URL
         const imageData = supabase.storage
             .from("main")
-            .getPublicUrl("hero_background.png");
+            .getPublicUrl("hero_background2.png");
         setImageUrl(imageData.data.publicUrl);
        
         // Get the logo before and after images
@@ -32,7 +32,7 @@ export default function Hero() {
     }, []);
    
     return (
-        <div className="relative">
+        <section id="hero" className="relative block pt-35 lg:pt-0 mb-0 pb-0">
             {/* Background Image */}
             {imageUrl && (
                 <Image
@@ -41,13 +41,14 @@ export default function Hero() {
                     width={1920}
                     height={1080}
                     priority={true}
-                    className="w-full h-auto object-contain"
+                    className="w-full object-cover"
+                    style={{ display: 'block', marginBottom: '0', height: 'auto' }}
                 />
             )}
            
-            {/* Logo Container with Flip Animation - Moved up to create space below */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center -mt-16 lg:-mt-20 xl:-mt-24">
-                <div className="relative w-[450px] h-[450px] lg:w-[550px] lg:h-[550px] xl:w-[650px] xl:h-[650px] group cursor-pointer">
+            {/* Logo Container with Flip Animation - Adjusted positioning for mobile */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pt-16 lg:pt-0 -mt-8 lg:-mt-20 xl:-mt-24">
+                <div className="relative w-[350px] h-[350px] sm:w-[450px] sm:h-[450px] lg:w-[550px] lg:h-[550px] xl:w-[650px] xl:h-[650px] group">
                     {/* Container for flip animation */}
                     <div
                         className="relative w-full h-full transition-transform duration-700 group-hover:[transform:rotateY(180deg)]"
@@ -57,8 +58,7 @@ export default function Hero() {
                         {logoBefore && (
                             <div
                                 className="absolute inset-0 w-full h-full group-hover:opacity-0 transition-opacity duration-700 scale-110"
-                                style={{ backfaceVisibility: 'hidden' }}
-                            >
+                                style={{ backfaceVisibility: 'hidden' }}>
                                 <Image
                                     src={logoBefore}
                                     alt="TerraHacks Logo"
@@ -72,7 +72,7 @@ export default function Hero() {
                         {/* Back Logo (logoAfter) - rotated 180 degrees initially */}
                         {logoAfter && (
                             <div
-                                className="absolute inset-0 w-full h-ful scale-0"
+                                className="absolute inset-0 w-full h-full"
                                 style={{
                                     backfaceVisibility: 'hidden',
                                     transform: 'rotateY(180deg)'
@@ -90,22 +90,28 @@ export default function Hero() {
                     </div>
                 </div>
                 
-                {/* Text Container - Now properly ordered */}
-                <div className="flex flex-col items-center space-y-4 mt-8">
-                    {/* Click here to start - Now above the date */}
+                {/* Text Container - Responsive text sizing */}
+                <div className="flex flex-col items-center space-y-4 mt-4 lg:mt-8 px-4">
+                    {/* Click here to start - Responsive text sizing */}
                     <Link 
                         href="/newsletter" 
-                        className="text-white text-3xl lg:text-4xl xl:text-5xl font-bold text-center drop-shadow-lg text-[#5D2A15] hover:opacity-80 transition-opacity duration-300"
+                        className="text-xl sm:text-2xl lg:text-4xl xl:text-5xl font-bold text-center drop-shadow-lg text-[#5D2A15] underline hover:opacity-80 transition-opacity duration-300"
                     >
                         Click Here To Start
                     </Link>
                     
-                    {/* Date and location info - Now below the click text */}
-                    <p className="text-white text-center drop-shadow-lg text-[#5D2A15]">
-                       August 1st 2025 - August 3rd 2025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hosted at Toronto Metropolitan University
-                    </p>
+                    {/* Date and location info - Responsive and better mobile layout */}
+                    <div className="text-center drop-shadow-lg text-[#5D2A15] font-semibold text-sm sm:text-base lg:text-lg">
+                        <p className="block sm:hidden">
+                            August 1st - 3rd, 2025<br />
+                            Toronto Metropolitan University
+                        </p>
+                        <p className="hidden sm:block">
+                            August 1st 2025 - August 3rd 2025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hosted at Toronto Metropolitan University
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 }

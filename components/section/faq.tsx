@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
+import Platforms from "../platforms";
 
 interface FAQ {
     id: number;
@@ -11,13 +12,10 @@ interface FAQ {
 }
 
 export default function Faq() {
-    const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
-    const [afterImageUrl, setAfterImageUrl] = useState<string>("");
-    const [showAfterImage, setShowAfterImage] = useState(false);
+    const [imageUrl, setImageUrl] = useState<string>("");
     const [faqs, setFaqs] = useState<FAQ[]>([]);
     const [expandedId, setExpandedId] = useState<number | null>(null);
-    const imageContainerRef = useRef<HTMLDivElement>(null);
-    const hasTriggeredRef = useRef(false);
+    
 
     useEffect(() => {
         const supabase = createClient();
@@ -38,39 +36,10 @@ export default function Faq() {
 
         fetchFAQs();
 
-        const beforeData = supabase.storage
+        const imageData = supabase.storage
             .from("main")
-            .getPublicUrl("faq_before.png");
-        setBeforeImageUrl(beforeData.data.publicUrl);
-
-        const afterData = supabase.storage
-            .from("main")
-            .getPublicUrl("faq_after.png");
-        setAfterImageUrl(afterData.data.publicUrl);
-    }, []);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && !hasTriggeredRef.current) {
-                        hasTriggeredRef.current = true;
-                        setShowAfterImage(true);
-                    }
-                });
-            },
-            { threshold: 0.6 }
-        );
-
-        if (imageContainerRef.current) {
-            observer.observe(imageContainerRef.current);
-        }
-
-        return () => {
-            if (imageContainerRef.current) {
-                observer.unobserve(imageContainerRef.current);
-            }
-        };
+            .getPublicUrl("faq.png");
+        setImageUrl(imageData.data.publicUrl);
     }, []);
 
     const toggleExpand = (id: number) => {
@@ -78,7 +47,7 @@ export default function Faq() {
     };
 
     return (
-        <section className="main min-h-screen flex flex-col items-start py-16 md:py-24 px-4 md:px-20">
+        <section id="faq" className="main min-h-[95vh] flex flex-col items-start pb-16 md:pb-24 px-4 md:px-20">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
                 FAQ
             </h2>
@@ -117,25 +86,11 @@ export default function Faq() {
                 })}
             </div>
 
-            <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative">
-                {beforeImageUrl && (
-                    <img
-                        src={beforeImageUrl}
-                        alt="FAQ - Before"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
-                            }`}
-                    />
-                )}
-
-                {afterImageUrl && (
-                    <img
-                        src={afterImageUrl}
-                        alt="FAQ - After"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
-                            }`}
-                    />
-                )}
-            </div>
+            {/* Image section - natural height, no cropping */}
+            <Platforms
+                imageUrl={imageUrl}
+                alt="FAQ Background Image"
+            />
         </section>
     );
 }

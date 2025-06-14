@@ -5,15 +5,12 @@ import { createClient } from "@/utils/supabase/client";
 import { FaRegEnvelope, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 import { RiDiscordLine, RiTiktokLine } from "react-icons/ri";
 import { SiLinktree } from "react-icons/si";
+import Platforms from "../platforms";
 
 export default function Contact() {
     const supabase = createClient();
-    const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
-    const [afterImageUrl, setAfterImageUrl] = useState<string>("");
-    const [showAfterImage, setShowAfterImage] = useState(false);
+    const [imageUrl, setImageUrl] = useState<string>("");
     const [copied, setCopied] = useState(false);
-    const imageContainerRef = useRef<HTMLDivElement>(null);
-    const hasTriggeredRef = useRef(false);
 
     const handleCopy = () => {
         navigator.clipboard
@@ -28,46 +25,14 @@ export default function Contact() {
     };
 
     useEffect(() => {
-        const beforeData = supabase.storage
+        const imageData = supabase.storage
             .from("main")
-            .getPublicUrl("contact_before.png");
-        setBeforeImageUrl(beforeData.data.publicUrl);
-
-        const afterData = supabase.storage
-            .from("main")
-            .getPublicUrl("contact_after.png");
-        setAfterImageUrl(afterData.data.publicUrl);
-    }, []);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && !hasTriggeredRef.current) {
-                        hasTriggeredRef.current = true;
-                        setShowAfterImage(true);
-                    }
-                });
-            },
-            {
-                threshold: 0.9,
-                rootMargin: "0px",
-            }
-        );
-
-        if (imageContainerRef.current) {
-            observer.observe(imageContainerRef.current);
-        }
-
-        return () => {
-            if (imageContainerRef.current) {
-                observer.unobserve(imageContainerRef.current);
-            }
-        };
-    }, []);
+            .getPublicUrl("contact.png");
+        setImageUrl(imageData.data.publicUrl);
+    }, [supabase.storage]);
 
     return (
-        <section id="contact" className="main min-h-screen flex flex-col py-16 md:py-24 items-end">
+        <section id="contact" className="main min-h-[95vh] flex flex-col pb-16 md:pb-24 items-start" style={{ marginTop: '50px' }}>
             {/* Header */}
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
                 CONTACT US
@@ -123,31 +88,11 @@ export default function Contact() {
                 </div>
             </div>
 
-            {/* Image section */}
-            <div
-                ref={imageContainerRef}
-                className="w-full h-[400px] md:h-[500px] relative overflow-hidden mt-12"
-            >
-                {/* Before image */}
-                {beforeImageUrl && (
-                    <img
-                        src={beforeImageUrl}
-                        alt="Contact - Before"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
-                            }`}
-                    />
-                )}
-
-                {/* After image */}
-                {afterImageUrl && (
-                    <img
-                        src={afterImageUrl}
-                        alt="Contact - After"
-                        className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
-                            }`}
-                    />
-                )}
-            </div>
+            {/* Image section - natural height, no cropping */}
+            <Platforms
+                imageUrl={imageUrl}
+                alt ="Contact Us Platforms"
+            />
         </section>
     );
 }

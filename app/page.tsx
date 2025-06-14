@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Home from "@/components/section/home";
 import About from "@/components/section/about";
 import Sponsors from "@/components/section/sponsors";
 import Faq from "@/components/section/faq";
 import Team from "@/components/section/team/team";
 import Contact from "@/components/section/contact";
-import Navbar from "@/components/navbar/navbar";
 import Hero from "@/components/section/hero";
 import { createClient } from "@/utils/supabase/client";
-import Footer from "@/components/footer";
 import Image from "next/image";
+import Footer from "@/components/footer";
 
 export default function Homepage() {
   const [backgroundUrl, setBackgroundUrl] = useState<string>("");
@@ -28,38 +26,45 @@ export default function Homepage() {
   }, []);
 
   return (
-    <>
-      {/* Background Image Container */}
-      <div className="fixed inset-0 z-0">
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-b from-green-50 to-blue-50 animate-pulse" />
-        )}
-        {backgroundUrl && (
-          <Image
-            src={backgroundUrl}
-            alt="TerraHacks background"
-            fill
-            className="object-cover"
-            onLoad={() => setImageLoaded(true)}
-            priority
-          />
-        )}
-        {/* Optional overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/5" />
+    <div className="w-full">   
+      {/* Hero section */}
+      <div className="relative z-20">
+        <Hero />
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10">
-        <Navbar />
-        <Hero />
-        <Home />
-        <About />
-        <Sponsors />
-        <Faq />
-        <Team />
-        <Contact />
-        <Footer/>
+      {/* Container for sections with background - starts immediately after hero */}
+      <div className="relative w-full -mt-1 pb-12">
+        {/* Background that covers this entire container */}
+        <div className="absolute inset-0 z-0">
+          {!imageLoaded && (
+            <div className="w-full h-full bg-gradient-to-b from-blue-200 to-green-200" />
+          )}
+          {backgroundUrl && (
+            <Image
+              src={backgroundUrl}
+              alt="TerraHacks background"
+              fill
+              sizes="100vw"
+              quality={100}
+              className="object-cover"
+              onLoad={() => setImageLoaded(true)}
+              priority
+              style={{ objectPosition: 'center top' }}
+            />
+          )}
+          <div className="absolute inset-0 bg-black/5" />
+        </div>
+
+        {/* Content sections */}
+        <div className="relative z-10">
+          <About />
+          <Sponsors />
+          <Faq />
+          <Team />
+          <Contact />
+          <Footer />
+        </div>
       </div>
-    </>
+    </div>
   );
 }

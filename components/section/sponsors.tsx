@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
+import Platforms from "../platforms";
 
 interface Sponsor {
   id: number;
@@ -14,14 +16,9 @@ interface Sponsor {
 }
 
 export default function Sponsors() {
-  const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
-  const [afterImageUrl, setAfterImageUrl] = useState<string>("");
-  const [showAfterImage, setShowAfterImage] = useState(false);
-  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [imageUrl, setImageUrl] = useState<string>("");
   const [sponsorshipPackageUrl, setSponsorshipPackageUrl] = useState<string>("");
   const [sponsorsWithUrls, setSponsorsWithUrls] = useState<any[]>([]);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -38,8 +35,6 @@ export default function Sponsors() {
         console.error("Error fetching sponsors:", error);
         return;
       }
-
-      setSponsors(data || []);
 
       // Get public URLs for logos
       const sponsorsWithPublicUrls = (data || []).map((sponsor: Sponsor) => {
@@ -62,48 +57,15 @@ export default function Sponsors() {
       .getPublicUrl("sponsorship_package.pdf");
     setSponsorshipPackageUrl(sponsorshipPackageData.data.publicUrl);
 
-    // Get the before image URL
-    const beforeData = supabase.storage
+    // Get the image URL
+    const imageData = supabase.storage
       .from("main")
-      .getPublicUrl("sponsors_before.png");
-    setBeforeImageUrl(beforeData.data.publicUrl);
-
-    // Preload the after image
-    const afterData = supabase.storage
-      .from("main")
-      .getPublicUrl("sponsors_after.png");
-    setAfterImageUrl(afterData.data.publicUrl);
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasTriggeredRef.current) {
-            hasTriggeredRef.current = true;
-            setShowAfterImage(true);
-          }
-        });
-      },
-      {
-        threshold: 0.9,
-        rootMargin: "0px"
-      }
-    );
-
-    if (imageContainerRef.current) {
-      observer.observe(imageContainerRef.current);
-    }
-
-    return () => {
-      if (imageContainerRef.current) {
-        observer.unobserve(imageContainerRef.current);
-      }
-    };
+      .getPublicUrl("sponsors.png");
+    setImageUrl(imageData.data.publicUrl);
   }, []);
 
   return (
-    <section className="main min-h-screen flex flex-col py-16 md:py-24 items-end">
+    <section id="sponsors" className="main min-h-[95vh] flex flex-col pb-16 md:pb-24 items-end">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-right">
         OUR SPONSORS
@@ -135,9 +97,11 @@ export default function Sponsors() {
               title={sponsor.full_name}
             >
               {sponsor.imageUrl ? (
-                <img
+                <Image
                   src={sponsor.imageUrl}
                   alt={sponsor.full_name}
+                  width={1920}
+                  height={1080}
                   className="object-contain max-h-24 max-w-full grayscale group-hover:grayscale-0 transition"
                   style={{ maxHeight: 96 }}
                 />
@@ -156,27 +120,10 @@ export default function Sponsors() {
       </div>
 
       {/* Image section - fills remaining space */}
-      <div ref={imageContainerRef} className="flex-1 w-full min-h-[400px] relative mt-16">
-        {/* Before image - initially visible */}
-        {beforeImageUrl && (
-          <img
-            src={beforeImageUrl}
-            alt="Sponsors - Before"
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-0" : "opacity-100"
-              }`}
-          />
-        )}
-
-        {/* After image - shown when scrolled into view */}
-        {afterImageUrl && (
-          <img
-            src={afterImageUrl}
-            alt="Sponsors - After"
-            className={`absolute top-0 left-0 w-full h-auto transition-opacity duration-1000 ease-in-out ${showAfterImage ? "opacity-100" : "opacity-0"
-              }`}
-          />
-        )}
-      </div>
+      <Platforms
+        imageUrl={imageUrl}
+        alt="Sponsors Background Platforms Image"
+      />
     </section>
   );
 }

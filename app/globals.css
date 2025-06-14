@@ -3,6 +3,7 @@
 @theme {
   --color-background: #fafafa;
   --color-foreground: #1e1e1e;
+  --animate-spin-slow: 'spin 2s linear infinite';
 }
 
 /*
@@ -14,6 +15,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -41,19 +43,19 @@ body {
 }
 
 .main {
-    position: relative;
-    max-width: 1440px;
-    margin: 0 auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-a:not(#contact a) {
+a:not(#contact a):not(#footer a):not(#hero a):not(nav a) {
   color: purple;
   text-decoration: none;
 }
 
-a:hover:not(#contact a) {
+a:hover:not(#contact a):not(#footer a):not(#hero a):not(nav a) {
   text-decoration: underline;
   color: blue;
   transition: ease-in-out 0.3s;
@@ -61,4 +63,11 @@ a:hover:not(#contact a) {
 
 button:hover {
   cursor: pointer;
+}
+
+/* Custom CSS */
+.backdrop-blur-laptop,
+.backdrop-blur-mobile {
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }

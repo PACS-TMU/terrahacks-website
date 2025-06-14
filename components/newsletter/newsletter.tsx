@@ -1,14 +1,14 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { subscribeToNewsletterAction } from "@/server/subscribe-to-newsletter";
 import { FormMessage, Message } from "@/components/form/form-message";
 import { SubmitButton } from "@/components/form/submit-button";
 import InputField from "@/components/newsletter/input-field";
+import Image from "next/image";
 
 interface NewsletterProps {
-  message: Message;
+  message?: Message | null;
 }
 
 export default function Newsletter({ message }: NewsletterProps) {
@@ -29,14 +29,15 @@ export default function Newsletter({ message }: NewsletterProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-green-50 to-blue-50 animate-pulse" />
         )}
         {backgroundUrl && (
-          <img
+          <Image
             src={backgroundUrl}
             alt="TerraHacks background"
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
             onLoad={() => setImageLoaded(true)}
+            priority
           />
         )}
-
         {/* Optional overlay for contrast */}
         <div className="absolute inset-0 bg-white/60 backdrop-blur-sm" />
       </div>
@@ -46,7 +47,6 @@ export default function Newsletter({ message }: NewsletterProps) {
         <h1 className="font-semibold text-center text-2xl md:text-3xl lg:text-4xl text-gray-800">
           Dig into our Newsletter
         </h1>
-
         <form className="flex flex-col gap-y-4">
           <InputField
             htmlFor="email_address"
@@ -85,8 +85,7 @@ export default function Newsletter({ message }: NewsletterProps) {
           >
             Dig in!
           </SubmitButton>
-
-          <FormMessage message={message} />
+          <FormMessage message={message ?? undefined} />
         </form>
       </div>
     </section>
