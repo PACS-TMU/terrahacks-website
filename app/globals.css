@@ -64,10 +64,3 @@ a:hover:not(#contact a):not(#footer a):not(#hero a):not(nav a) {
 button:hover {
   cursor: pointer;
 }
-
-/* Custom CSS */
-.backdrop-blur-laptop,
-.backdrop-blur-mobile {
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-}
