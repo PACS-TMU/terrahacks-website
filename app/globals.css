@@ -50,12 +50,12 @@ body {
   padding-right: 1rem;
 }
 
-a:not(#contact a):not(#footer a):not(#hero a):not(nav a) {
+a:not(#contact a):not(#footer a):not(#hero a):not(nav a):not(#sponsors a) {
   color: purple;
   text-decoration: none;
 }
 
-a:hover:not(#contact a):not(#footer a):not(#hero a):not(nav a) {
+a:hover:not(#contact a):not(#footer a):not(#hero a):not(nav a):not(#sponsors a) {
   text-decoration: underline;
   color: blue;
   transition: ease-in-out 0.3s;

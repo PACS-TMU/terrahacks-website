@@ -6,7 +6,7 @@ import React from "react";
 
 export default function Footer() {
     return (
-        <footer id="footer" className="bg-transparent text-background pt-12">
+        <footer id="footer" className="bg-transparent text-background pt-12 w-full">
             <div className="main flex flex-col items-center justify-center space-y-6">
                 <div id="terrahacks-links" className="flex flex-row items-center justify-between w-[90%] md:w-[60%] lg:w-[40%] 2xl:w-[35%] text-background pt-2 mt-2 xl:mt-6 3xl:pt-4 3xl:mt-6">
                     <a
@@ -23,7 +23,7 @@ export default function Footer() {
                         rel="noopener noreferrer"
                         href="https://www.instagram.com/terrahacks.tmu"
                         target="_blank"
-                        className="hover:text-pink-600 ease-in-out duration-300"
+                        className="hover:text-pink-400 ease-in-out duration-300"
                     >
                         <FaInstagram className="w-8 md:w-10 xl:w-12 h-auto" />
                     </a>

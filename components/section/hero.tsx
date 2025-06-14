@@ -77,6 +77,7 @@ export default function Hero() {
                                     src={logoAfter}
                                     alt="TerraHacks Logo Alternative"
                                     fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                     priority={true}
                                     className="w-1/2 h-1/2 object-contain mx-auto my-auto"
                                 />

@@ -111,7 +111,7 @@ export default function Sponsors() {
                   <p className="text-xs mt-1">Image not available</p>
                 </div>
               )}
-              <p className="text-center mt-2 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <p className="text-center mt-2 text-sm text-gray-900 font-semibold underline opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {sponsor.short_name}
               </p>
             </a>
