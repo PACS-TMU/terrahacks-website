@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
-import Image from "next/image";
 import Platforms from "../platforms";
 
 interface FAQ {
@@ -13,13 +12,10 @@ interface FAQ {
 }
 
 export default function Faq() {
-    const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
-    const [afterImageUrl, setAfterImageUrl] = useState<string>("");
-    const [showAfterImage, setShowAfterImage] = useState(false);
+    const [imageUrl, setImageUrl] = useState<string>("");
     const [faqs, setFaqs] = useState<FAQ[]>([]);
     const [expandedId, setExpandedId] = useState<number | null>(null);
-    const imageContainerRef = useRef<HTMLDivElement>(null);
-    const hasTriggeredRef = useRef(false);
+    
 
     useEffect(() => {
         const supabase = createClient();
@@ -40,39 +36,10 @@ export default function Faq() {
 
         fetchFAQs();
 
-        const beforeData = supabase.storage
+        const imageData = supabase.storage
             .from("main")
-            .getPublicUrl("faq_before.png");
-        setBeforeImageUrl(beforeData.data.publicUrl);
-
-        const afterData = supabase.storage
-            .from("main")
-            .getPublicUrl("faq_after.png");
-        setAfterImageUrl(afterData.data.publicUrl);
-    }, []);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && !hasTriggeredRef.current) {
-                        hasTriggeredRef.current = true;
-                        setShowAfterImage(true);
-                    }
-                });
-            },
-            { threshold: 0.6 }
-        );
-
-        if (imageContainerRef.current) {
-            observer.observe(imageContainerRef.current);
-        }
-
-        return () => {
-            if (imageContainerRef.current) {
-                observer.unobserve(imageContainerRef.current);
-            }
-        };
+            .getPublicUrl("faq.png");
+        setImageUrl(imageData.data.publicUrl);
     }, []);
 
     const toggleExpand = (id: number) => {
@@ -121,10 +88,8 @@ export default function Faq() {
 
             {/* Image section - natural height, no cropping */}
             <Platforms
-                beforeImageUrl={beforeImageUrl}
-                afterImageUrl={afterImageUrl}
-                showAfterImage={showAfterImage}
-                ref={imageContainerRef}
+                imageUrl={imageUrl}
+                alt="FAQ Background Image"
             />
         </section>
     );

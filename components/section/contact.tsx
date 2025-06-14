@@ -5,17 +5,12 @@ import { createClient } from "@/utils/supabase/client";
 import { FaRegEnvelope, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 import { RiDiscordLine, RiTiktokLine } from "react-icons/ri";
 import { SiLinktree } from "react-icons/si";
-import Image from "next/image";
 import Platforms from "../platforms";
 
 export default function Contact() {
     const supabase = createClient();
-    const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
-    const [afterImageUrl, setAfterImageUrl] = useState<string>("");
-    const [showAfterImage, setShowAfterImage] = useState(false);
+    const [imageUrl, setImageUrl] = useState<string>("");
     const [copied, setCopied] = useState(false);
-    const imageContainerRef = useRef<HTMLDivElement>(null);
-    const hasTriggeredRef = useRef(false);
 
     const handleCopy = () => {
         navigator.clipboard
@@ -30,42 +25,10 @@ export default function Contact() {
     };
 
     useEffect(() => {
-        const beforeData = supabase.storage
+        const imageData = supabase.storage
             .from("main")
-            .getPublicUrl("contact_before.png");
-        setBeforeImageUrl(beforeData.data.publicUrl);
-
-        const afterData = supabase.storage
-            .from("main")
-            .getPublicUrl("contact_after.png");
-        setAfterImageUrl(afterData.data.publicUrl);
-    }, []);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && !hasTriggeredRef.current) {
-                        hasTriggeredRef.current = true;
-                        setShowAfterImage(true);
-                    }
-                });
-            },
-            {
-                threshold: 0.9,
-                rootMargin: "0px",
-            }
-        );
-
-        if (imageContainerRef.current) {
-            observer.observe(imageContainerRef.current);
-        }
-
-        return () => {
-            if (imageContainerRef.current) {
-                observer.unobserve(imageContainerRef.current);
-            }
-        };
+            .getPublicUrl("contact.png");
+        setImageUrl(imageData.data.publicUrl);
     }, []);
 
     return (
@@ -127,10 +90,8 @@ export default function Contact() {
 
             {/* Image section - natural height, no cropping */}
             <Platforms
-                beforeImageUrl={beforeImageUrl}
-                afterImageUrl={afterImageUrl}
-                showAfterImage={showAfterImage}
-                ref={imageContainerRef}
+                imageUrl={imageUrl}
+                alt ="Contact Us Platforms"
             />
         </section>
     );

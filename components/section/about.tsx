@@ -2,62 +2,22 @@
 
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
-import Image from "next/image";
 import Platforms from "@/components/platforms";
 
 export default function About() {
-  const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
-  const [afterImageUrl, setAfterImageUrl] = useState<string>("");
-  const [showAfterImage, setShowAfterImage] = useState(false);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-  const hasTriggeredRef = useRef(false);
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   useEffect(() => {
-    // Get the before image URL from Supabase
     const supabase = createClient();
 
-    const beforeData = supabase.storage
+    const imageData = supabase.storage
       .from("main")
-      .getPublicUrl("about_before.png");
-
-    setBeforeImageUrl(beforeData.data.publicUrl);
-
-    // Preload the after image
-    const afterData = supabase.storage
-      .from("main")
-      .getPublicUrl("about_after.png");
-    setAfterImageUrl(afterData.data.publicUrl);
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasTriggeredRef.current) {
-            hasTriggeredRef.current = true;
-            setShowAfterImage(true);
-          }
-        });
-      },
-      {
-        threshold: 0.4,
-        rootMargin: "0px"
-      }
-    );
-
-    if (imageContainerRef.current) {
-      observer.observe(imageContainerRef.current);
-    }
-
-    return () => {
-      if (imageContainerRef.current) {
-        observer.unobserve(imageContainerRef.current);
-      }
-    };
+      .getPublicUrl("about.png");
+    setImageUrl(imageData.data.publicUrl);
   }, []);
 
   return (
-    <section id="about" ref={imageContainerRef} className="main min-h-[95vh] flex flex-col pt-32 md:pt-24">
+    <section id="about" className="main min-h-[95vh] flex flex-col pt-32 md:pt-24">
       {/* Header */}
       <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8">
         ABOUT TERRAHACKS
@@ -74,11 +34,8 @@ export default function About() {
 
       {/* Image section - fills remaining space */}
       <Platforms
-        beforeImageUrl={beforeImageUrl}
-        afterImageUrl={afterImageUrl}
-        showAfterImage={showAfterImage}
-        alt="About Section Platforms"
-        ref={imageContainerRef}
+        imageUrl={imageUrl}
+        alt="About TerraHacks Platforms"
       />
     </section>
   );

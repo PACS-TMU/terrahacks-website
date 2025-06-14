@@ -16,14 +16,9 @@ interface Sponsor {
 }
 
 export default function Sponsors() {
-  const [beforeImageUrl, setBeforeImageUrl] = useState<string>("");
-  const [afterImageUrl, setAfterImageUrl] = useState<string>("");
-  const [showAfterImage, setShowAfterImage] = useState(false);
-  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  const [imageUrl, setImageUrl] = useState<string>("");
   const [sponsorshipPackageUrl, setSponsorshipPackageUrl] = useState<string>("");
   const [sponsorsWithUrls, setSponsorsWithUrls] = useState<any[]>([]);
-  const imageContainerRef = useRef<HTMLDivElement>(null);
-  const hasTriggeredRef = useRef(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -40,8 +35,6 @@ export default function Sponsors() {
         console.error("Error fetching sponsors:", error);
         return;
       }
-
-      setSponsors(data || []);
 
       // Get public URLs for logos
       const sponsorsWithPublicUrls = (data || []).map((sponsor: Sponsor) => {
@@ -64,44 +57,11 @@ export default function Sponsors() {
       .getPublicUrl("sponsorship_package.pdf");
     setSponsorshipPackageUrl(sponsorshipPackageData.data.publicUrl);
 
-    // Get the before image URL
-    const beforeData = supabase.storage
+    // Get the image URL
+    const imageData = supabase.storage
       .from("main")
-      .getPublicUrl("sponsors_before.png");
-    setBeforeImageUrl(beforeData.data.publicUrl);
-
-    // Preload the after image
-    const afterData = supabase.storage
-      .from("main")
-      .getPublicUrl("sponsors_after.png");
-    setAfterImageUrl(afterData.data.publicUrl);
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasTriggeredRef.current) {
-            hasTriggeredRef.current = true;
-            setShowAfterImage(true);
-          }
-        });
-      },
-      {
-        threshold: 0.9,
-        rootMargin: "0px"
-      }
-    );
-
-    if (imageContainerRef.current) {
-      observer.observe(imageContainerRef.current);
-    }
-
-    return () => {
-      if (imageContainerRef.current) {
-        observer.unobserve(imageContainerRef.current);
-      }
-    };
+      .getPublicUrl("sponsors.png");
+    setImageUrl(imageData.data.publicUrl);
   }, []);
 
   return (
@@ -161,11 +121,8 @@ export default function Sponsors() {
 
       {/* Image section - fills remaining space */}
       <Platforms
-        beforeImageUrl={beforeImageUrl}
-        afterImageUrl={afterImageUrl}
-        showAfterImage={showAfterImage}
-        alt="Sponsors Section Platforms"
-        ref={imageContainerRef}
+        imageUrl={imageUrl}
+        alt="Sponsors Background Platforms Image"
       />
     </section>
   );
