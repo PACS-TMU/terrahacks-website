@@ -1,0 +1,28 @@
+/*Custom CSS styles for the Swiper.js carasoul*/
+.swiper-button-next,
+.swiper-button-prev {
+    color: #FAFAFA;
+    margin: 0;
+    display: none;
+}
+
+@media screen and (min-width: 1240px) {
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        margin: 0;
+        display: block;
+    }
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #FAFAFA;
+}
+
+.custom-swiper-pagination {
+    position: relative !important;
+    text-align: center;
+    transition: 300ms opacity;
+    transform: translate3d(0, 0, 0);
+    z-index: 10;
+}
