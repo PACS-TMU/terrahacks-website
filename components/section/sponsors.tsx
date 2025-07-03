@@ -17,6 +17,7 @@ interface Sponsor {
 
 export default function Sponsors() {
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [moleImageUrl, setMoleImageUrl] = useState<string>("");
   const [sponsorshipPackageUrl, setSponsorshipPackageUrl] = useState<string>("");
   const [sponsorsWithUrls, setSponsorsWithUrls] = useState<any[]>([]);
 
@@ -62,6 +63,12 @@ export default function Sponsors() {
       .from("main")
       .getPublicUrl("sponsors.png");
     setImageUrl(imageData.data.publicUrl);
+
+    // Add mole image fetch
+    const moleImageData = supabase.storage
+      .from("main")
+      .getPublicUrl("mole_2.png");
+    setMoleImageUrl(moleImageData.data.publicUrl);
   }, []);
 
   return (
@@ -122,7 +129,10 @@ export default function Sponsors() {
       {/* Image section - fills remaining space */}
       <Platforms
         imageUrl={imageUrl}
+        moleImageUrl={moleImageUrl}
+        position="left"
         alt="Sponsors Background Platforms Image"
+        customMoleClasses="absolute top-[15%] left-[40%] z-10 w-[11%] h-auto"
       />
     </section>
   );
