@@ -13,6 +13,7 @@ interface FAQ {
 
 export default function Faq() {
     const [imageUrl, setImageUrl] = useState<string>("");
+    const [moleImageUrl, setMoleImageUrl] = useState<string>("");
     const [faqs, setFaqs] = useState<FAQ[]>([]);
     const [expandedId, setExpandedId] = useState<number | null>(null);
     
@@ -40,6 +41,12 @@ export default function Faq() {
             .from("main")
             .getPublicUrl("faq.png");
         setImageUrl(imageData.data.publicUrl);
+
+        // Add mole image fetch
+        const moleImageData = supabase.storage
+            .from("main")
+            .getPublicUrl("mole_3.png");
+        setMoleImageUrl(moleImageData.data.publicUrl);
     }, []);
 
     const toggleExpand = (id: number) => {
@@ -89,7 +96,10 @@ export default function Faq() {
             {/* Image section - natural height, no cropping */}
             <Platforms
                 imageUrl={imageUrl}
+                moleImageUrl={moleImageUrl}
+                position="right"
                 alt="FAQ Background Image"
+                customMoleClasses="absolute top-[8.2%] left-[24.6%] z-10 w-[11%] h-auto"
             />
         </section>
     );
