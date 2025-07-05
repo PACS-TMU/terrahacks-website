@@ -6,6 +6,7 @@ import Platforms from "@/components/platforms";
 
 export default function About() {
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [moleImageUrl, setMoleImageUrl] = useState<string>("");
 
   useEffect(() => {
     const supabase = createClient();
@@ -14,6 +15,11 @@ export default function About() {
       .from("main")
       .getPublicUrl("about.png");
     setImageUrl(imageData.data.publicUrl);
+
+    const moleImageData = supabase.storage
+      .from("main")
+      .getPublicUrl("mole_1.png");
+    setMoleImageUrl(moleImageData.data.publicUrl);
   }, []);
 
   return (
@@ -35,7 +41,10 @@ export default function About() {
       {/* Image section - fills remaining space */}
       <Platforms
         imageUrl={imageUrl}
+        moleImageUrl={moleImageUrl}
+        position="right"
         alt="About TerraHacks Platforms"
+        customMoleClasses="absolute top-[17%] right-[9%] z-10 w-[11%] h-auto"
       />
     </section>
   );

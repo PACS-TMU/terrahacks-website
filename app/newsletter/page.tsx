@@ -22,12 +22,14 @@ export default async function NewsletterPage({
   return (
     <section className="relative w-full min-h-[95vh] overflow-hidden flex flex-col items-center justify-center px-4 pt-24 md:pt-32 lg:pt-40">
       {/* Background image */}
-
       <Image
         fill
+        sizes="100vw"
+        priority
         src={`/assets/background.png`}
         alt="TerraHacks background"
         className="absolute inset-0 w-full h-full object-cover"
+        unoptimized
       />
 
       <div className="relative z-10 w-full max-w-xl bg-white bg-opacity-90 border border-gray-300 rounded-lg shadow-xl px-6 md:px-10 py-10 flex flex-col gap-6">
@@ -35,7 +37,10 @@ export default async function NewsletterPage({
           Dig into our Newsletter
         </h1>
 
-        <form action={subscribeToNewsletterAction} className="flex flex-col gap-y-4">
+        <form
+          action={subscribeToNewsletterAction}
+          className="flex flex-col gap-y-4"
+        >
           <InputField
             htmlFor="email_address"
             fieldTitle="Email Address"

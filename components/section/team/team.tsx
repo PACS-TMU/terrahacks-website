@@ -7,6 +7,7 @@ import './team.css';
 
 export default function Team() {
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [moleImageUrl, setMoleImageUrl] = useState<string>("");
 
   useEffect(() => {
     const supabase = createClient();
@@ -16,6 +17,12 @@ export default function Team() {
       .from("main")
       .getPublicUrl("team.png");
     setImageUrl(imageData.data.publicUrl);
+
+    // Add mole image fetch
+    const moleImageData = supabase.storage
+      .from("main")
+      .getPublicUrl("mole_4.png");
+    setMoleImageUrl(moleImageData.data.publicUrl);
   }, []);
 
   return (
@@ -30,7 +37,10 @@ export default function Team() {
       {/* Image section - natural height, no cropping */}
       <Platforms
         imageUrl={imageUrl}
+        moleImageUrl={moleImageUrl}
+        position="left"
         alt="TerraHacks Team Platforms Image"
+        customMoleClasses="absolute top-[9.3%] left-[15.6%] z-10 w-[11%] h-auto"
       />
     </section>
   );
